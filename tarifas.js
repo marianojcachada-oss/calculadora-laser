@@ -128,7 +128,7 @@ function calcular() {
   if (fieldname21 === 1) comidaValue += 2;
   else if (fieldname21 > 1) comidaValue += 2 + (fieldname21 - 1);
 
-  out("delivery_comida").innerText = "$ " + Math.round(comidaValue);
+  out("delivery_comida").textContent = "$ " + Math.round(comidaValue);
 
   /* =========================
      DELIVERY ALCOHOL
@@ -145,7 +145,7 @@ function calcular() {
   if (fieldname21 === 1) alcoholValue += 2;
   else if (fieldname21 > 1) alcoholValue += 2 + (fieldname21 - 1);
 
-  out("delivery_alcohol").innerText = "$ " + Math.round(alcoholValue);
+  out("delivery_alcohol").textContent = "$ " + Math.round(alcoholValue);
 
   /* =========================
      OBJETO PERDIDO
@@ -159,3 +159,4 @@ function calcular() {
 millasInput.addEventListener("input", calcular);
 paradasInput.addEventListener("input", calcular);
 calcular();
+
