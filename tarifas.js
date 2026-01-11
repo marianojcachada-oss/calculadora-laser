@@ -14,12 +14,12 @@ function calcular() {
   let fieldname1 = fieldname2 * 2 + 2;
 
   if (fieldname1 < 6) {
-    out("sin_descuento").innerText = "U$D 6";
+    out("sin_descuento").innerText = "$  6";
     fieldname1 = 6;
   } else {
     if (fieldname21 == 1) fieldname1 += 2;
     else if (fieldname21 > 1) fieldname1 += 2 + (fieldname21 - 1);
-    out("sin_descuento").innerText = "U$D " + fieldname1.toFixed(2);
+    out("sin_descuento").innerText = "$  " + fieldname1.toFixed(2);
   }
 
   /* =========================
@@ -51,7 +51,7 @@ function calcular() {
   let valor = fieldname2 * 2 + 2;
 
   if (valor < 7) {
-    out("con_descuento").innerText = "U$D 6";
+    out("con_descuento").innerText = "$  6";
   } else {
     if (valor < 19.75) discount = valor * 0.9;
     else if (valor <= 29.75) discount = valor * 0.85;
@@ -61,13 +61,13 @@ function calcular() {
     if (fieldname21 == 1) discount += 2;
     else if (fieldname21 > 1) discount += 2 + (fieldname21 - 1);
 
-    out("con_descuento").innerText = "U$D " + discount.toFixed(2);
+    out("con_descuento").innerText = "$  " + discount.toFixed(2);
   }
 
   /* =========================
      VAN
   ========================= */
-  let van = valor < 8 ? "U$D 8" : Math.round(
+  let van = valor < 8 ? "$  8" : Math.round(
     (valor < 19.75 ? valor :
      valor <= 39.75 ? valor * 0.9 :
      valor * 0.85)
@@ -78,7 +78,7 @@ function calcular() {
   /* =========================
      TRABAJO
   ========================= */
-  let trabajo = valor < 7 ? "U$D 6" : Math.round(
+  let trabajo = valor < 7 ? "$  6" : Math.round(
     (valor < 19.75 ? valor * 0.8 : valor * 0.75)
     + (fieldname21 > 0 ? 2 + Math.max(0, fieldname21 - 1) : 0)
   );
@@ -87,7 +87,7 @@ function calcular() {
   /* =========================
      TRABAJO VAN
   ========================= */
-  let trabajoVan = valor < 8 ? "U$D 8" : Math.round(
+  let trabajoVan = valor < 8 ? "$  8" : Math.round(
     (valor < 19.75 ? valor * 0.9 : valor * 0.85)
     + (fieldname21 > 0 ? 2 + Math.max(0, fieldname21 - 1) : 0)
   );
@@ -119,11 +119,12 @@ function calcular() {
      OBJETO PERDIDO
   ========================= */
   let obj = (fieldname2 * 2 + 2) * 0.75;
-  out("objeto").innerText = obj < 6 ? "U$D 6" : "U$D " + Math.round(obj);
+  out("objeto").innerText = obj < 6 ? "$  6" : "$  " + Math.round(obj);
 }
 
 millasInput.addEventListener("input", calcular);
 paradasInput.addEventListener("input", calcular);
 calcular();
+
 
 
