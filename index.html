@@ -12,40 +12,113 @@
   <section class="card">
 
     <header class="card-header">
-      🚕 Calculadora de Tarifas
-      <span>Taxi Laser</span>
+      🚕 Calculadora Taxi Laser
+      <span>Dispatcher Tool</span>
     </header>
+
+    <!-- TABS -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="tarifas">Tarifas</button>
+      <button class="tab" data-tab="viaje-largo">Viaje Largo</button>
+      <button class="tab" data-tab="taximetro">Taxímetro</button>
+    </nav>
 
     <section class="card-body">
 
-      <div class="inputs">
-        <div>
-          <label>Millas</label>
-          <input type="number" id="millas" step="0.1" value="0">
+      <!-- ================= TARIFAS ================= -->
+      <div class="tab-content active" id="tarifas">
+
+        <div class="inputs">
+          <div>
+            <label>Millas</label>
+            <input type="number" id="millas" step="0.1" value="0">
+          </div>
+
+          <div>
+            <label>Paradas</label>
+            <input type="number" id="paradas" value="0">
+          </div>
         </div>
 
-        <div>
-          <label>Paradas</label>
-          <input type="number" id="paradas" value="0">
+        <div class="results">
+          <div><span>Tarifa sin descuento</span><strong id="sin_descuento">—</strong></div>
+          <div><span>Clasificación</span><strong id="clasificacion">—</strong></div>
+          <div><span>Descuento aplicado</span><strong id="descuento">—</strong></div>
+          <div class="total"><span>Tarifa con descuento</span><strong id="con_descuento">—</strong></div>
         </div>
+
+        <h3>Servicios especiales</h3>
+
+        <div class="grid">
+          <div><span>VAN</span><strong id="van">—</strong></div>
+          <div><span>Trabajo</span><strong id="trabajo">—</strong></div>
+          <div><span>Trabajo VAN</span><strong id="trabajo_van">—</strong></div>
+          <div><span>Delivery comida</span><strong id="delivery_comida">—</strong></div>
+          <div><span>Delivery alcohol</span><strong id="delivery_alcohol">—</strong></div>
+          <div><span>Objeto perdido</span><strong id="objeto">—</strong></div>
+        </div>
+
       </div>
 
-      <div class="results">
-        <div><span>Tarifa sin descuento</span><strong id="sin_descuento">—</strong></div>
-        <div><span>Clasificación</span><strong id="clasificacion">—</strong></div>
-        <div><span>Descuento aplicado</span><strong id="descuento">—</strong></div>
-        <div class="total"><span>Tarifa con descuento</span><strong id="con_descuento">—</strong></div>
+      <!-- ================= VIAJE LARGO ================= -->
+      <div class="tab-content" id="viaje-largo">
+
+        <div class="inputs">
+          <div>
+            <label>Horas</label>
+            <input type="number" id="horas" value="0">
+          </div>
+
+          <div>
+            <label>Minutos</label>
+            <input type="number" id="minutos" value="0">
+          </div>
+        </div>
+
+        <div class="results">
+          <div><span>Tarifa viaje largo</span><strong id="viaje_largo">—</strong></div>
+          <div class="total"><span>Viaje largo (roundtrip)</span><strong id="viaje_largo_rt">—</strong></div>
+        </div>
+
       </div>
 
-      <h3>Servicios especiales</h3>
+      <!-- ================= TAXIMETRO ================= -->
+      <div class="tab-content" id="taximetro">
 
-      <div class="grid">
-        <div><span>VAN</span><strong id="van">—</strong></div>
-        <div><span>Trabajo</span><strong id="trabajo">—</strong></div>
-        <div><span>Trabajo VAN</span><strong id="trabajo_van">—</strong></div>
-        <div><span>Delivery comida</span><strong id="delivery_comida">—</strong></div>
-        <div><span>Delivery alcohol</span><strong id="delivery_alcohol">—</strong></div>
-        <div><span>Objeto perdido</span><strong id="objeto">—</strong></div>
+        <div class="inputs">
+          <div>
+            <label>Millas</label>
+            <input type="number" id="millas_taximetro" step="0.1" value="0">
+          </div>
+
+          <div>
+            <label>Hora inicio</label>
+            <input type="number" id="hora_inicio" value="0">
+          </div>
+
+          <div>
+            <label>Min inicio</label>
+            <input type="number" id="min_inicio" value="0">
+          </div>
+
+          <div>
+            <label>Hora actual</label>
+            <input type="number" id="hora_fin" value="0">
+          </div>
+
+          <div>
+            <label>Min actual</label>
+            <input type="number" id="min_fin" value="0">
+          </div>
+        </div>
+
+        <div class="results">
+          <div class="total">
+            <span>Valor taxímetro</span>
+            <strong id="taximetro_valor">—</strong>
+          </div>
+        </div>
+
       </div>
 
     </section>
