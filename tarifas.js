@@ -1,142 +1,80 @@
-function out(id) {
-  return document.getElementById(id);
-}
+function out(id){ return document.getElementById(id); }
 
-function setMoney(id, value, decimals = 0) {
-  if (value === null || value === undefined || isNaN(value)) {
-    out(id).textContent = "$ 0";
-    return;
-  }
-  const formatted =
-    decimals > 0 ? value.toFixed(decimals) : Math.round(value);
-  out(id).textContent = "$ " + formatted;
-}
-
-function calcular() {
-  const millas = parseFloat(out("millas").value) || 0;
-  const paradas = parseInt(out("paradas").value) || 0;
-
-  /* ===============================
-     PARADAS (AISLADAS)
-  =============================== */
-  let valorParadas = 0;
-  if (paradas === 1) valorParadas = 2;
-  else if (paradas > 1) valorParadas = 2 + (paradas - 1);
-
-  /* ===============================
-     BASE SIN PARADAS
-  =============================== */
-  let base = millas * 2 + 2;
-  if (base < 6) base = 6;
-
-  /* ===============================
-     TARIFA SIN DESCUENTO (VISIBLE)
-  =============================== */
-  const sinDescuentoFinal = base + valorParadas;
-  setMoney("sin_descuento", sinDescuentoFinal, 2);
-
-  /* ===============================
-     CLASIFICACIÓN + DESCUENTO
-  =============================== */
-  let clasificacion = "";
-  let factor = 1;
-  let descuentoTxt = "";
-
-  if (base < 19.75) {
-    clasificacion = "Menor a $19,75";
-    factor = 0.9;
-    descuentoTxt = "10%";
-  } else if (base <= 29.75) {
-    clasificacion = "Entre $19,75 y $29,75";
-    factor = 0.85;
-    descuentoTxt = "15%";
-  } else if (base < 40) {
-    clasificacion = "Entre $29,75 y $40";
-    factor = 0.8;
-    descuentoTxt = "20%";
-  } else {
-    clasificacion = "Mayor a $40";
-    factor = 0.75;
-    descuentoTxt = "25%";
-  }
-
-  out("clasificacion").innerText = clasificacion;
-  out("descuento").innerText = descuentoTxt;
-
-  /* ===============================
-     TARIFA CON DESCUENTO
-  =============================== */
-  const conDescuento = base * factor + valorParadas;
-  setMoney("con_descuento", conDescuento, 2);
-
-  /* ===============================
-     VAN
-  =============================== */
-  let vanBase = millas * 2 + 2;
-  if (vanBase < 8) vanBase = 8;
-
-  let vanFactor = 1;
-  if (vanBase >= 19.76 && vanBase <= 39.75) vanFactor = 0.9;
-  else if (vanBase >= 40) vanFactor = 0.85;
-
-  const vanFinal = Math.round(vanBase * vanFactor + valorParadas);
-  setMoney("van", vanFinal);
-
-  /* ===============================
-     TRABAJO
-  =============================== */
-  let trabajoFactor = base < 19.75 ? 0.8 : 0.75;
-  const trabajoFinal = Math.round(base * trabajoFactor + valorParadas);
-  setMoney("trabajo", trabajoFinal);
-
-  /* ===============================
-     TRABAJO VAN
-  =============================== */
-  let trabajoVanFactor = base < 19.75 ? 0.9 : 0.85;
-  const trabajoVanFinal = Math.round(base * trabajoVanFactor + valorParadas);
-  setMoney("trabajo_van", trabajoVanFinal);
-
-  /* ===============================
-     DELIVERY COMIDA
-  =============================== */
-  let comidaValue = 0;
-  if (millas <= 2.6) {
-    comidaValue = 12;
-  } else {
-    if (base < 19.75) comidaValue = base * 0.9 + 5;
-    else if (base < 29.75) comidaValue = base * 0.85 + 5;
-    else comidaValue = base * 0.8 + 5;
-  }
-  comidaValue += valorParadas;
-  setMoney("delivery_comida", comidaValue);
-
-  /* ===============================
-     DELIVERY ALCOHOL
-  =============================== */
-  let alcoholValue = 0;
-  if (millas <= 4.8) {
-    alcoholValue = 17;
-  } else {
-    if (base < 19.75) alcoholValue = base * 0.9 + 7;
-    else if (base < 29.75) alcoholValue = base * 0.85 + 7;
-    else alcoholValue = base * 0.8 + 7;
-  }
-  alcoholValue += valorParadas;
-  setMoney("delivery_alcohol", alcoholValue);
-
-  /* ===============================
-     OBJETO PERDIDO
-  =============================== */
-  let objeto = base * 0.75;
-  if (objeto < 6) objeto = 6;
-  setMoney("objeto", objeto);
-}
-
-/* ===============================
-   AUTO CALCULO
-=============================== */
-["millas", "paradas"].forEach(id => {
-  out(id).addEventListener("input", calcular);
+/* ================= TABS ================= */
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".tab, .tab-content").forEach(el => el.classList.remove("active"));
+    btn.classList.add("active");
+    out(btn.dataset.tab).classList.add("active");
+  };
 });
 
-calcular();
+/* ================= HELPERS ================= */
+function money(v, d=0){ return "$ " + (d ? v.toFixed(d) : Math.round(v)); }
+
+/* ================= TARIFAS ================= */
+function calcularTarifas(){
+  const m = +out("millas").value || 0;
+  const p = +out("paradas").value || 0;
+
+  let paradas = p === 1 ? 2 : p > 1 ? 2 + (p - 1) : 0;
+
+  let base = m * 2 + 2;
+  if (base < 6) base = 6;
+
+  out("sin_descuento").textContent = money(base + paradas,2);
+
+  let factor = 0.9, txt="10%";
+  if (base >= 19.76 && base <= 29.75){ factor = 0.85; txt="15%"; }
+  else if (base < 40){ factor = 0.8; txt="20%"; }
+  else { factor = 0.75; txt="25%"; }
+
+  out("clasificacion").textContent = txt;
+  out("descuento").textContent = txt;
+  out("con_descuento").textContent = money(base*factor + paradas,2);
+
+  out("van").textContent = money(Math.round((base<8?8:base)*factor + paradas));
+  out("trabajo").textContent = money(Math.round(base*(base<19.75?0.8:0.75) + paradas));
+  out("trabajo_van").textContent = money(Math.round(base*(base<19.75?0.9:0.85) + paradas));
+
+  out("delivery_comida").textContent = money((m<=2.6?12:(base*factor+5))+paradas);
+  out("delivery_alcohol").textContent = money((m<=4.8?17:(base*factor+7))+paradas);
+
+  out("objeto").textContent = money(Math.max(base*0.75,6));
+}
+
+/* ================= VIAJE LARGO ================= */
+function calcularViajeLargo(){
+  const h = +out("horas").value || 0;
+  const min = +out("minutos").value || 0;
+  const total = h*60+min;
+  out("viaje_largo").textContent = money(total*90/60,2);
+  out("viaje_largo_rt").textContent = money((total*90/60)*2*0.75+2,2);
+}
+
+/* ================= TAXIMETRO ================= */
+function calcularTaximetro(){
+  const m = +out("millas_taximetro").value || 0;
+  const hi = +out("hora_inicio").value || 0;
+  const mi = +out("min_inicio").value || 0;
+  const hf = +out("hora_fin").value || 0;
+  const mf = +out("min_fin").value || 0;
+
+  let base = 2;
+  let dist = Math.max(0,(m*1760-50)/260)*0.25;
+  let time = Math.max(0,((hf*60+mf)-(hi*60+mi))*60/50)*0.25;
+  let t = base+dist+time;
+
+  const d=t%1;
+  t=Math.floor(t)+(d<=.125?0:d<.375?.25:d<.625?.5:d<.875?.75:1);
+  out("taximetro_valor").textContent = money(t,2);
+}
+
+/* ================= LISTENERS ================= */
+["millas","paradas"].forEach(i=>out(i).oninput=calcularTarifas);
+["horas","minutos"].forEach(i=>out(i).oninput=calcularViajeLargo);
+["millas_taximetro","hora_inicio","min_inicio","hora_fin","min_fin"].forEach(i=>out(i).oninput=calcularTaximetro);
+
+calcularTarifas();
+calcularViajeLargo();
+calcularTaximetro();
