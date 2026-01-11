@@ -1,72 +1,129 @@
-document.addEventListener("DOMContentLoaded", () => {
+const millasInput = document.getElementById("millas");
+const paradasInput = document.getElementById("paradas");
 
-  const millas = document.getElementById("millas");
-  const paradas = document.getElementById("paradas");
+const out = id => document.getElementById(id);
 
-  const sinDesc = document.getElementById("sin_descuento");
-  const clasificacion = document.getElementById("clasificacion");
-  const descuento = document.getElementById("descuento");
-  const conDesc = document.getElementById("con_descuento");
-  const van = document.getElementById("van");
-  const trabajo = document.getElementById("trabajo");
-  const trabajoVan = document.getElementById("trabajo_van");
-  const deliveryComida = document.getElementById("delivery_comida");
-  const deliveryAlcohol = document.getElementById("delivery_alcohol");
-  const objeto = document.getElementById("objeto");
+function calcular() {
 
-  function calcularTarifaBase(m) {
-    // Fórmula base que usabas
-    return (m * 2) + 2;
+  const fieldname2 = parseFloat(millasInput.value) || 0;
+  const fieldname21 = parseInt(paradasInput.value) || 0;
+
+  /* =========================
+     TARIFA SIN DESCUENTO
+  ========================= */
+  let fieldname1 = fieldname2 * 2 + 2;
+
+  if (fieldname1 < 6) {
+    out("sin_descuento").innerText = "U$D 6";
+    fieldname1 = 6;
+  } else {
+    if (fieldname21 == 1) fieldname1 += 2;
+    else if (fieldname21 > 1) fieldname1 += 2 + (fieldname21 - 1);
+    out("sin_descuento").innerText = "U$D " + fieldname1.toFixed(2);
   }
 
-  function aplicarParadas(valor, p) {
-    if (p <= 0) return valor;
-    if (p === 1) return valor + 2;
-    return valor + 2 + (p - 1);
+  /* =========================
+     CLASIFICACIÓN
+  ========================= */
+  let clasificacion = "";
+  if (fieldname1 < 19.75) clasificacion = "Es menor a $19,75";
+  else if (fieldname1 <= 29.75) clasificacion = "Es mayor a $19,75 pero menor a $29,75";
+  else if (fieldname1 < 40) clasificacion = "Es mayor a $29,75 pero menor a $40,00";
+  else clasificacion = "Es mayor a $40,00";
+
+  out("clasificacion").innerText = clasificacion;
+
+  /* =========================
+     DESCUENTO (%)
+  ========================= */
+  let descuentoTxt = "";
+  if (fieldname1 < 19.75) descuentoTxt = "10%";
+  else if (fieldname1 <= 29.75) descuentoTxt = "15%";
+  else if (fieldname1 < 40) descuentoTxt = "20%";
+  else descuentoTxt = "25%";
+
+  out("descuento").innerText = descuentoTxt;
+
+  /* =========================
+     TARIFA CON DESCUENTO
+  ========================= */
+  let discount = 0;
+  let valor = fieldname2 * 2 + 2;
+
+  if (valor < 7) {
+    out("con_descuento").innerText = "U$D 6";
+  } else {
+    if (valor < 19.75) discount = valor * 0.9;
+    else if (valor <= 29.75) discount = valor * 0.85;
+    else if (valor < 40) discount = valor * 0.8;
+    else discount = valor * 0.75;
+
+    if (fieldname21 == 1) discount += 2;
+    else if (fieldname21 > 1) discount += 2 + (fieldname21 - 1);
+
+    out("con_descuento").innerText = "U$D " + discount.toFixed(2);
   }
 
-  function obtenerDescuento(valor) {
-    if (valor < 19.75) return 0.10;
-    if (valor <= 29.75) return 0.15;
-    if (valor < 40) return 0.20;
-    return 0.25;
-  }
+  /* =========================
+     VAN
+  ========================= */
+  let van = valor < 8 ? "U$D 8" : Math.round(
+    (valor < 19.75 ? valor :
+     valor <= 39.75 ? valor * 0.9 :
+     valor * 0.85)
+    + (fieldname21 > 0 ? 2 + Math.max(0, fieldname21 - 1) : 0)
+  );
+  out("van").innerText = van;
 
-  function textoClasificacion(valor) {
-    if (valor < 19.75) return "Es menor a $19.75";
-    if (valor <= 29.75) return "Entre $19.75 y $29.75";
-    if (valor < 40) return "Entre $29.75 y $40";
-    return "Mayor a $40";
-  }
+  /* =========================
+     TRABAJO
+  ========================= */
+  let trabajo = valor < 7 ? "U$D 6" : Math.round(
+    (valor < 19.75 ? valor * 0.8 : valor * 0.75)
+    + (fieldname21 > 0 ? 2 + Math.max(0, fieldname21 - 1) : 0)
+  );
+  out("trabajo").innerText = trabajo;
 
-  function calcular() {
-    const m = Number(millas.value || 0);
-    const p = Number(paradas.value || 0);
+  /* =========================
+     TRABAJO VAN
+  ========================= */
+  let trabajoVan = valor < 8 ? "U$D 8" : Math.round(
+    (valor < 19.75 ? valor * 0.9 : valor * 0.85)
+    + (fieldname21 > 0 ? 2 + Math.max(0, fieldname21 - 1) : 0)
+  );
+  out("trabajo_van").innerText = trabajoVan;
 
-    let base = calcularTarifaBase(m);
-    base = Math.max(base, 6);
-    base = aplicarParadas(base, p);
+  /* =========================
+     DELIVERY COMIDA
+  ========================= */
+  let comida = fieldname2 <= 2.6 ? 12 : (
+    valor < 19.75 ? valor * 0.9 + 5 :
+    valor < 29.75 ? valor * 0.85 + 5 :
+    valor * 0.8 + 5
+  );
+  comida += fieldname21 > 0 ? 2 + Math.max(0, fieldname21 - 1) : 0;
+  out("delivery_comida").innerText = Math.round(comida);
 
-    const desc = obtenerDescuento(base);
-    const conDescuento = Math.round(base * (1 - desc));
+  /* =========================
+     DELIVERY ALCOHOL
+  ========================= */
+  let alcohol = fieldname2 <= 4.8 ? 17 : (
+    valor < 19.75 ? valor * 0.9 + 7 :
+    valor < 29.75 ? valor * 0.85 + 7 :
+    valor * 0.8 + 7
+  );
+  alcohol += fieldname21 > 0 ? 2 + Math.max(0, fieldname21 - 1) : 0;
+  out("delivery_alcohol").innerText = Math.round(alcohol);
 
-    sinDesc.innerText = `USD ${base.toFixed(2)}`;
-    clasificacion.innerText = textoClasificacion(base);
-    descuento.innerText = `${desc * 100}%`;
-    conDesc.innerText = `USD ${conDescuento}`;
+  /* =========================
+     OBJETO PERDIDO
+  ========================= */
+  let obj = (fieldname2 * 2 + 2) * 0.75;
+  out("objeto").innerText = obj < 6 ? "U$D 6" : "U$D " + Math.round(obj);
+}
 
-    van.innerText = `USD ${Math.round(base * 0.9)}`;
-    trabajo.innerText = `USD ${Math.round(base * 0.8)}`;
-    trabajoVan.innerText = `USD ${Math.round(base * 0.85)}`;
+millasInput.addEventListener("input", calcular);
+paradasInput.addEventListener("input", calcular);
+calcular();
 
-    deliveryComida.innerText = `USD ${Math.round(base + 5)}`;
-    deliveryAlcohol.innerText = `USD ${Math.round(base + 7)}`;
 
-    objeto.innerText = `USD ${Math.max(6, Math.round(base * 0.75))}`;
-  }
-
-  millas.addEventListener("input", calcular);
-  paradas.addEventListener("input", calcular);
-
-  calcular();
-});
