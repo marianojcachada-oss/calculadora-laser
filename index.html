@@ -2,100 +2,57 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Calculadora de Tarifas</title>
+  <title>Calculadora Taxi Laser</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="shell">
-    <section class="card">
 
-      <header class="card-header">
-        <div class="title">
-          🚕 Calculadora de Tarifas
-          <span>Taxi Laser · Dispatcher Tool</span>
-        </div>
-      </header>
+<main class="shell">
+  <section class="card">
 
-      <section class="card-body">
+    <header class="card-header">
+      🚕 Calculadora de Tarifas
+      <span>Taxi Laser</span>
+    </header>
 
-        <!-- INPUTS -->
-        <div class="inputs">
-          <div class="input-box">
-            <label>Millas</label>
-            <input type="number" id="millas" step="0.1" value="0">
-          </div>
+    <section class="card-body">
 
-          <div class="input-box">
-            <label>Paradas</label>
-            <input type="number" id="paradas" value="0">
-          </div>
+      <div class="inputs">
+        <div>
+          <label>Millas</label>
+          <input type="number" id="millas" step="0.1" value="0">
         </div>
 
-        <!-- MAIN RESULTS -->
-        <div class="results">
-          <div class="result-row">
-            <span>Tarifa base (10 PM – 4 AM)</span>
-            <strong id="sin_descuento">—</strong>
-          </div>
-
-          <div class="result-row accent">
-            <span>Clasificación</span>
-            <strong id="clasificacion">—</strong>
-          </div>
-
-          <div class="result-row">
-            <span>Descuento aplicado</span>
-            <strong id="descuento">—</strong>
-          </div>
-
-          <div class="result-row total">
-            <span>Total final</span>
-            <strong id="con_descuento">—</strong>
-          </div>
+        <div>
+          <label>Paradas</label>
+          <input type="number" id="paradas" value="0">
         </div>
+      </div>
 
-        <!-- EXTRAS -->
-        <div class="extras">
-          <h3>Servicios adicionales</h3>
+      <div class="results">
+        <div><span>Tarifa sin descuento</span><strong id="sin_descuento">—</strong></div>
+        <div><span>Clasificación</span><strong id="clasificacion">—</strong></div>
+        <div><span>Descuento aplicado</span><strong id="descuento">—</strong></div>
+        <div class="total"><span>Tarifa con descuento</span><strong id="con_descuento">—</strong></div>
+      </div>
 
-          <div class="extras-grid">
-            <div class="extra">
-              <span>VAN</span>
-              <strong id="van">—</strong>
-            </div>
+      <h3>Servicios especiales</h3>
 
-            <div class="extra">
-              <span>Trabajo</span>
-              <strong id="trabajo">—</strong>
-            </div>
+      <div class="grid">
+        <div><span>VAN</span><strong id="van">—</strong></div>
+        <div><span>Trabajo</span><strong id="trabajo">—</strong></div>
+        <div><span>Trabajo VAN</span><strong id="trabajo_van">—</strong></div>
+        <div><span>Delivery comida</span><strong id="delivery_comida">—</strong></div>
+        <div><span>Delivery alcohol</span><strong id="delivery_alcohol">—</strong></div>
+        <div><span>Objeto perdido</span><strong id="objeto">—</strong></div>
+      </div>
 
-            <div class="extra">
-              <span>Trabajo VAN</span>
-              <strong id="trabajo_van">—</strong>
-            </div>
-
-            <div class="extra">
-              <span>Delivery comida</span>
-              <strong id="delivery_comida">—</strong>
-            </div>
-
-            <div class="extra">
-              <span>Delivery alcohol</span>
-              <strong id="delivery_alcohol">—</strong>
-            </div>
-
-            <div class="extra">
-              <span>Objeto perdido</span>
-              <strong id="objeto">—</strong>
-            </div>
-          </div>
-        </div>
-
-      </section>
     </section>
-  </main>
+  </section>
+</main>
 
-  <script src="tarifas.js"></script>
+<script src="tarifas.js"></script>
 </body>
+</html>
 
