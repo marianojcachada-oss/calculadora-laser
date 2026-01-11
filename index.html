@@ -3,52 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <title>Calculadora de Tarifas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="container">
-  <h1>🚕 Calculadora de Tarifas</h1>
+<div class="app">
+  <header>
+    🚕 Calculadora de Tarifas
+    <span>Taxi Laser</span>
+  </header>
 
-  <div class="box">
-    <label>Millas</label>
-    <input type="number" id="millas" step="0.1" value="0">
+  <section class="inputs">
+    <div class="field">
+      <label>Millas</label>
+      <input type="number" id="millas" step="0.1" value="0">
+    </div>
 
-    <label>Paradas</label>
-    <input type="number" id="paradas" value="0">
-  </div>
+    <div class="field">
+      <label>Paradas</label>
+      <input type="number" id="paradas" value="0">
+    </div>
+  </section>
 
-  <div class="box">
-    <label>Tarifa sin descuento (10 PM – 4 AM)</label>
-    <div id="sin_descuento">—</div>
+  <section class="results">
+    <div class="result">
+      <span>Tarifa sin descuento</span>
+      <strong id="sin_descuento">—</strong>
+    </div>
 
-    <label>Clasificación</label>
-    <div id="clasificacion">—</div>
+    <div class="result highlight">
+      <span>Clasificación</span>
+      <strong id="clasificacion">—</strong>
+    </div>
 
-    <label>Descuento aplicado</label>
-    <div id="descuento">—</div>
+    <div class="result">
+      <span>Descuento aplicado</span>
+      <strong id="descuento">—</strong>
+    </div>
 
-    <label>Tarifa con descuento</label>
-    <div id="con_descuento">—</div>
+    <div class="result total">
+      <span>Tarifa con descuento</span>
+      <strong id="con_descuento">—</strong>
+    </div>
+  </section>
 
-    <label>Tarifa VAN</label>
-    <div id="van">—</div>
+  <section class="extras">
+    <h2>Servicios especiales</h2>
 
-    <label>Tarifa de trabajo</label>
-    <div id="trabajo">—</div>
+    <div class="grid">
+      <div>
+        <span>VAN</span>
+        <strong id="van">—</strong>
+      </div>
 
-    <label>Tarifa de trabajo VAN</label>
-    <div id="trabajo_van">—</div>
+      <div>
+        <span>Trabajo</span>
+        <strong id="trabajo">—</strong>
+      </div>
 
-    <label>Delivery comida</label>
-    <div id="delivery_comida">—</div>
+      <div>
+        <span>Trabajo VAN</span>
+        <strong id="trabajo_van">—</strong>
+      </div>
 
-    <label>Delivery alcohol / tabaquería</label>
-    <div id="delivery_alcohol">—</div>
+      <div>
+        <span>Delivery comida</span>
+        <strong id="delivery_comida">—</strong>
+      </div>
 
-    <label>Devolución de objeto perdido</label>
-    <div id="objeto">—</div>
-  </div>
+      <div>
+        <span>Delivery alcohol</span>
+        <strong id="delivery_alcohol">—</strong>
+      </div>
+
+      <div>
+        <span>Objeto perdido</span>
+        <strong id="objeto">—</strong>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <script src="tarifas.js"></script>
