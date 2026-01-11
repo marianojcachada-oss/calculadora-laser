@@ -1,37 +1,136 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: #111;
-  color: #fff;
+  margin: 0;
+  background: #f3f6fb;
+  display: flex;
+  justify-content: center;
   padding: 20px;
 }
 
-.container {
-  max-width: 600px;
-  margin: auto;
+.app {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  overflow: hidden;
 }
 
-.box {
-  background: #1e1e1e;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+/* Header */
+header {
+  background: linear-gradient(135deg, #0052cc, #0078d4);
+  color: white;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+header span {
+  display: block;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* Inputs */
+.inputs {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+}
+
+.field {
+  flex: 1;
 }
 
 label {
+  font-size: 13px;
+  color: #555;
   display: block;
-  margin-top: 12px;
-  font-size: 14px;
+  margin-bottom: 6px;
 }
 
 input {
   width: 100%;
-  padding: 8px;
-  margin-top: 4px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
 }
 
-.box div {
-  background: #2a2a2a;
-  padding: 8px;
-  border-radius: 4px;
+input:focus {
+  outline: none;
+  border-color: #0078d4;
+}
+
+/* Results */
+.results {
+  padding: 0 20px 20px;
+}
+
+.result {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  background: #f8f9fc;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.result span {
+  color: #555;
+  font-size: 14px;
+}
+
+.result strong {
+  font-size: 16px;
+}
+
+.result.highlight {
+  background: #eef4ff;
+  border-left: 4px solid #0078d4;
+}
+
+.result.total {
+  background: #e8f5e9;
+  font-size: 17px;
+}
+
+/* Extras */
+.extras {
+  padding: 20px;
+  background: #f9fafc;
+}
+
+.extras h2 {
+  font-size: 15px;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.grid div {
+  background: white;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.grid span {
+  font-size: 13px;
+  color: #555;
+}
+
+.grid strong {
+  display: block;
   margin-top: 4px;
+  font-size: 15px;
 }
