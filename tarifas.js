@@ -10,25 +10,26 @@ function money(v, d = 0) {
 /* ================= TABS ================= */
 document.addEventListener("DOMContentLoaded", () => {
 
-  document.querySelectorAll(".tab").forEach(btn => {
-    btn.addEventListener("click", () => {
+  const tabs = document.querySelectorAll(".tab");
+  const contents = document.querySelectorAll(".tab-content");
 
-      document.querySelectorAll(".tab").forEach(t =>
-        t.classList.remove("active")
-      );
-      document.querySelectorAll(".tab-content").forEach(c =>
-        c.classList.remove("active")
-      );
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
 
-      btn.classList.add("active");
-      out(btn.dataset.tab).classList.add("active");
+      // quitar active de todo
+      tabs.forEach(t => t.classList.remove("active"));
+      contents.forEach(c => c.classList.remove("active"));
+
+      // activar el seleccionado
+      tab.classList.add("active");
+      document
+        .getElementById(tab.dataset.tab)
+        .classList.add("active");
     });
   });
 
-  calcularTarifas();
-  calcularViajeLargo();
-  calcularTaximetro();
 });
+
 
 /* ================= TARIFAS ================= */
 function calcularTarifas() {
@@ -142,4 +143,5 @@ function calcularTaximetro() {
 ].forEach(id =>
   out(id).addEventListener("input", calcularTaximetro)
 );
+
 
