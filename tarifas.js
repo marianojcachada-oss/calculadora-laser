@@ -48,7 +48,11 @@ function calcularTarifas() {
   let base = m * 2 + 2;
   if (base < 6) base = 6;
 
-  setValue("sin_descuento", money(base, 2));
+  setValue(
+  "sin_descuento",
+  money(base + extraParadas, 2)
+  );
+
 
   let factor = 0.9;
   let txt = "10%";
@@ -106,9 +110,10 @@ function calcularTarifas() {
 
   // Objeto perdido mínimo 6
   setValue(
-    "objeto",
-    money(Math.max(base * 0.75, 6))
+  "objeto",
+  money(Math.max(base * 0.75, 6) + extraParadas)
   );
+
 }
 
 /* ================= VIAJE LARGO ================= */
@@ -175,3 +180,4 @@ function calcularTaximetro() {
 calcularTarifas();
 calcularViajeLargo();
 calcularTaximetro();
+
