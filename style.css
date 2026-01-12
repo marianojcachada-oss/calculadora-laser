@@ -165,3 +165,37 @@ h3 {
     grid-column: 1;
   }
 }
+
+/* ================= TABS ================= */
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tab {
+  background: transparent;
+  border: 1px solid #1f2937;
+  color: #9ca3af;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.tab.active {
+  background: #111827;
+  color: #22c55e;
+  border-color: #22c55e;
+}
+
+/* OCULTAR TODAS LAS SECCIONES */
+.tab-content {
+  display: none;
+}
+
+/* MOSTRAR SOLO LA ACTIVA */
+.tab-content.active {
+  display: block;
+}
