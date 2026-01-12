@@ -16,20 +16,19 @@ document.addEventListener("DOMContentLoaded", () => {
   tabs.forEach(tab => {
     tab.addEventListener("click", () => {
 
-      // quitar active de todo
       tabs.forEach(t => t.classList.remove("active"));
       contents.forEach(c => c.classList.remove("active"));
 
-      // activar el seleccionado
       tab.classList.add("active");
-      document
-        .getElementById(tab.dataset.tab)
-        .classList.add("active");
+      document.getElementById(tab.dataset.tab).classList.add("active");
     });
   });
 
+  // inicializar cálculos
+  calcularTarifas();
+  calcularViajeLargo();
+  calcularTaximetro();
 });
-
 
 /* ================= TARIFAS ================= */
 function calcularTarifas() {
@@ -38,7 +37,7 @@ function calcularTarifas() {
   const p = +out("paradas").value || 0;
 
   // paradas SOLO se suman al final
-  let extraParadas = p === 1 ? 2 : p > 1 ? 2 + (p - 1) : 0;
+  const extraParadas = p === 1 ? 2 : p > 1 ? 2 + (p - 1) : 0;
 
   let base = m * 2 + 2;
   if (base < 6) base = 6;
@@ -65,23 +64,49 @@ function calcularTarifas() {
   out("con_descuento").textContent =
     money(base * factor + extraParadas, 2);
 
-  out("van").textContent =
-    money((base < 8 ? 8 : base) * factor + extraParadas);
+  /* ===== SERVICIOS ESPECIALES (MÍNIMOS CORREGIDOS) ===== */
 
-  out("trabajo").textContent =
-    money(base * (base < 19.75 ? 0.8 : 0.75) + extraParadas);
+  // VAN → mínimo 8
+  out("van").textContent = money(
+    Math.max(8, base * factor) + extraParadas
+  );
 
-  out("trabajo_van").textContent =
-    money(base * (base < 19.75 ? 0.9 : 0.85) + extraParadas);
+  // TRABAJO → mínimo 6
+  out("trabajo").textContent = money(
+    Math.max(
+      6,
+      base * (base < 19.75 ? 0.8 : 0.75)
+    ) + extraParadas
+  );
 
-  out("delivery_comida").textContent =
-    money((m <= 2.6 ? 12 : base * factor + 5) + extraParadas);
+  // TRABAJO VAN → mínimo 8
+  out("trabajo_van").textContent = money(
+    Math.max(
+      8,
+      base * (base < 19.75 ? 0.9 : 0.85)
+    ) + extraParadas
+  );
 
-  out("delivery_alcohol").textContent =
-    money((m <= 4.8 ? 17 : base * factor + 7) + extraParadas);
+  // DELIVERY COMIDA → mínimo 12
+  out("delivery_comida").textContent = money(
+    Math.max(
+      12,
+      m <= 2.6 ? 12 : base * factor + 5
+    ) + extraParadas
+  );
 
-  out("objeto").textContent =
-    money(Math.max(base * 0.75, 6));
+  // DELIVERY ALCOHOL → mínimo 17
+  out("delivery_alcohol").textContent = money(
+    Math.max(
+      17,
+      m <= 4.8 ? 17 : base * factor + 7
+    ) + extraParadas
+  );
+
+  // OBJETO PERDIDO → mínimo 6 (NO suma paradas)
+  out("objeto").textContent = money(
+    Math.max(6, base * 0.75)
+  );
 }
 
 /* ================= VIAJE LARGO ================= */
@@ -143,5 +168,3 @@ function calcularTaximetro() {
 ].forEach(id =>
   out(id).addEventListener("input", calcularTaximetro)
 );
-
-
