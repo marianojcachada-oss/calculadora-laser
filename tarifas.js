@@ -106,17 +106,38 @@ const vanFinal =
 
 setValue("van", money(vanFinal));
 
-  // Trabajo mínimo 6
-  setValue(
-    "trabajo",
-    money(Math.max(base * (base < 19.75 ? 0.8 : 0.75) + extraParadas, 6))
-  );
+/* ===== TRABAJO ===== */
 
-  // Trabajo VAN mínimo 8
-  setValue(
-    "trabajo_van",
-    money(Math.max(base * (base < 19.75 ? 0.9 : 0.85) + extraParadas, 8))
-  );
+// mínimo base
+const trabajoBase = Math.max(base, 6);
+
+// descuento según tarifa sin descuento
+let trabajoFactor = base < 19.75 ? 0.8 : 0.75;
+
+// si queda en mínimo, NO se descuenta
+const trabajoFinal =
+  trabajoBase === 6
+    ? 6 + extraParadas
+    : trabajoBase * trabajoFactor + extraParadas;
+
+setValue("trabajo", money(trabajoFinal));
+
+/* ===== TRABAJO VAN ===== */
+
+// mínimo base
+const trabajoVanBase = Math.max(base, 8);
+
+// descuento según tarifa sin descuento
+let trabajoVanFactor = base < 19.75 ? 0.9 : 0.85;
+
+// si queda en mínimo, NO se descuenta
+const trabajoVanFinal =
+  trabajoVanBase === 8
+    ? 8 + extraParadas
+    : trabajoVanBase * trabajoVanFactor + extraParadas;
+
+setValue("trabajo_van", money(trabajoVanFinal));
+
 
   // Delivery comida mínimo 12
   setValue(
@@ -202,6 +223,7 @@ function calcularTaximetro() {
 calcularTarifas();
 calcularViajeLargo();
 calcularTaximetro();
+
 
 
 
