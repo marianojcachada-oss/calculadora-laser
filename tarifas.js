@@ -45,8 +45,9 @@ function calcularTarifas() {
   // paradas SOLO al final
   const extraParadas = p === 1 ? 2 : p > 1 ? 2 + (p - 1) : 0;
 
-  let base = m * 2 + 2;
-  if (base < 6) base = 6;
+  const valorReal = m * 2 + 2;
+  const base = Math.max(valorReal, 6);
+
 
   setValue(
   "sin_descuento",
@@ -71,10 +72,16 @@ function calcularTarifas() {
   setValue("clasificacion", txt);
   setValue("descuento", txt);
 
+  const conDescuento =
+  valorReal <= 6
+    ? 6 + extraParadas
+    : valorReal * factor + extraParadas;
+
   setValue(
-    "con_descuento",
-    money(base * factor + extraParadas, 2)
+  "con_descuento",
+  money(conDescuento, 2)
   );
+
 
   /* ===== Servicios especiales (con mínimos) ===== */
 
@@ -180,4 +187,5 @@ function calcularTaximetro() {
 calcularTarifas();
 calcularViajeLargo();
 calcularTaximetro();
+
 
