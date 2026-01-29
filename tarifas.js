@@ -85,11 +85,26 @@ function calcularTarifas() {
 
   /* ===== Servicios especiales (con mínimos) ===== */
 
-  // VAN mínimo 8
-  setValue(
-    "van",
-    money(Math.max((base < 8 ? 8 : base) * factor + extraParadas, 8))
-  );
+/* ===== VAN ===== */
+
+// base VAN mínima
+const vanBase = Math.max(base, 8);
+
+// descuento VAN según tarifa sin descuento
+let vanFactor = 1;
+
+if (base >= 19.76 && base <= 39.75) {
+  vanFactor = 0.9;   // 10%
+} else if (base >= 39.76) {
+  vanFactor = 0.85;  // 15%
+}
+
+const vanFinal =
+  vanBase === 8
+    ? 8 + extraParadas
+    : vanBase * vanFactor + extraParadas;
+
+setValue("van", money(vanFinal));
 
   // Trabajo mínimo 6
   setValue(
@@ -187,5 +202,6 @@ function calcularTaximetro() {
 calcularTarifas();
 calcularViajeLargo();
 calcularTaximetro();
+
 
 
