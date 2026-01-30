@@ -156,7 +156,24 @@ setValue("trabajo_van", money(trabajoVanFinal));
   "objeto",
   money(Math.max(base * 0.75, 6) + extraParadas)
   );
+  
+/* ===== SERVICIO PICK UP 🚚 ===== */
+setValue(
+  "servicio_pickup",
+  money(base + 20 + extraParadas)
+);
 
+/* ===== SERVICIO CON MASCOTA 🐕 ===== */
+setValue(
+  "mascota",
+  money(base * factor + 4 + extraParadas, 2)
+);
+
+/* ===== SERVICIO CABLE AUXILIAR 🔌 ===== */
+setValue(
+  "cable_auxiliar",
+  money(Math.max(base * factor, 10) + extraParadas, 2)
+);
 }
 
 /* ================= VIAJE LARGO ================= */
@@ -223,6 +240,7 @@ function calcularTaximetro() {
 calcularTarifas();
 calcularViajeLargo();
 calcularTaximetro();
+
 
 
 
