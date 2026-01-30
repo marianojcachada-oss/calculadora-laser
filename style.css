@@ -226,7 +226,7 @@ h3 {
   animation: valuePulse .25s ease;
 }
 
-.trabajocss {
+.grid.trabajocss {
   border: 2.5px solid #2563eb; /* azul trabajo */
   border-radius: 14px;
   padding: 10px 12px;
@@ -251,6 +251,7 @@ h3 {
   50%  { transform: scale(1.08); }
   100% { transform: scale(1); }
 }
+
 
 
 
