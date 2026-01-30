@@ -226,31 +226,23 @@ h3 {
   animation: valuePulse .25s ease;
 }
 
-.grid.trabajocss {
-  border: 2.5px solid #2563eb; /* azul trabajo */
+.grid > div.trabajocss {
+  border: 2.5px solid #2563eb;
   border-radius: 14px;
   padding: 10px 12px;
   background: linear-gradient(
     90deg,
-    rgba(37, 99, 235, 0.12),
+    rgba(37, 99, 235, 0.15),
     rgba(37, 99, 235, 0.05)
   );
 }
 
-/* Para que el número se vea más protagonista */
-.grid.trabajocss strong {
+.grid > div.trabajocss strong {
   font-weight: 700;
+  color: #93c5fd;
 }
 
-.grid.trabajocss strong {
-  animation: pulseTrabajo 0.35s ease;
-}
 
-@keyframes pulseTrabajo {
-  0%   { transform: scale(1); }
-  50%  { transform: scale(1.08); }
-  100% { transform: scale(1); }
-}
 
 
 
