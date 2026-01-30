@@ -115,7 +115,9 @@ body {
 .results .total {
   grid-column: span 2;
   background: linear-gradient(90deg, #020617, #020617);
-  border-color: var(--accent-soft);
+  border: 1px solid var(--accent-soft);
+  outline: 1px solid rgba(255,255,255,0.15);
+  outline-offset: -2px;
 }
 
 .results .total strong {
@@ -223,4 +225,5 @@ h3 {
 .value-animate {
   animation: valuePulse .25s ease;
 }
+
 
