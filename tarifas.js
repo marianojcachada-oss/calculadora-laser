@@ -164,10 +164,20 @@ setValue(
 );
 
 /* ===== SERVICIO CON MASCOTA 🐕 ===== */
+
+// 1️⃣ tarifa con descuento
+let baseMascota = base * factor;
+
+// 2️⃣ mínimo $6
+if (baseMascota < 6) baseMascota = 6;
+
+// 3️⃣ sumar extra mascota (+$4)
+// 4️⃣ sumar paradas al final
 setValue(
   "mascota",
-  money(base * factor + 4 + extraParadas, 2)
+  money(baseMascota + 4 + extraParadas, 2)
 );
+
 
 /* ===== SERVICIO CABLE AUXILIAR 🔌 ===== */
 setValue(
@@ -240,6 +250,7 @@ function calcularTaximetro() {
 calcularTarifas();
 calcularViajeLargo();
 calcularTaximetro();
+
 
 
 
