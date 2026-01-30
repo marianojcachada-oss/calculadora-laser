@@ -238,11 +238,11 @@ h3 {
 }
 
 /* Para que el número se vea más protagonista */
-.trabajocss strong {
+.grid.trabajocss strong {
   font-weight: 700;
 }
 
-.trabajocss strong {
+.grid.trabajocss strong {
   animation: pulseTrabajo 0.35s ease;
 }
 
@@ -251,6 +251,7 @@ h3 {
   50%  { transform: scale(1.08); }
   100% { transform: scale(1); }
 }
+
 
 
 
