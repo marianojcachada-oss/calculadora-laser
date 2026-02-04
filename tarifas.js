@@ -182,9 +182,18 @@ setValue(
   money(Math.round(baseMascota + 4 + extraParadas))
 );
 
-
-
 /* ===== SERVICIO CABLE AUXILIAR 🔌 ===== */
+
+// tarifa con descuento REAL (sin paradas)
+const tarifaConDescuentoBase =
+  valorReal <= 6
+    ? 6
+    : valorReal * factor;
+
+// mínimo $10
+let cableBase = Math.max(tarifaConDescuentoBase, 10);
+
+// sumar paradas al final y redondear
 setValue(
   "cable_auxiliar",
   money(Math.round(cableBase + extraParadas))
@@ -256,5 +265,6 @@ function calcularTaximetro() {
 calcularTarifas();
 calcularViajeLargo();
 calcularTaximetro();
+
 
 
