@@ -72,16 +72,15 @@ function calcularTarifas() {
   setValue("clasificacion", txt);
   setValue("descuento", txt);
 
-  let conDescuentoBase = base * factor;
+  const conDescuento =
+  valorReal <= 6
+    ? 6 + extraParadas
+    : valorReal * factor + extraParadas;
 
-// mínimo absoluto
-if (conDescuentoBase < 6) conDescuentoBase = 6;
-
-setValue(
+  setValue(
   "con_descuento",
-  money(conDescuentoBase + extraParadas, 2)
-);
-
+  money(conDescuento, 2)
+  );
 
 
   /* ===== Servicios especiales (con mínimos) ===== */
@@ -116,15 +115,12 @@ const trabajoBase = Math.max(base, 6);
 let trabajoFactor = base < 19.75 ? 0.8 : 0.75;
 
 // si queda en mínimo, NO se descuenta
-let trabajoCalculado = base * trabajoFactor;
+const trabajoFinal =
+  trabajoBase === 6
+    ? 6 + extraParadas
+    : trabajoBase * trabajoFactor + extraParadas;
 
-if (trabajoCalculado < 6) trabajoCalculado = 6;
-
-setValue(
-  "trabajo",
-  money(trabajoCalculado + extraParadas, 2)
-);
-
+setValue("trabajo", money(trabajoFinal));
 
 /* ===== TRABAJO VAN ===== */
 
@@ -179,20 +175,16 @@ if (baseMascota < 6) baseMascota = 6;
 // 4️⃣ sumar paradas al final
 setValue(
   "mascota",
-  money(Math.round(baseMascota + 4 + extraParadas))
+  money(baseMascota + 4 + extraParadas, 2)
 );
-
 
 
 /* ===== SERVICIO CABLE AUXILIAR 🔌 ===== */
-let cableBase = base * factor;
-if (cableBase < 10) cableBase = 10;
-
 setValue(
   "cable_auxiliar",
-  money(Math.round(cableBase + extraParadas))
+  money(Math.max(base * factor, 10) + extraParadas, 2)
 );
-
+}
 
 /* ================= VIAJE LARGO ================= */
 function calcularViajeLargo() {
@@ -258,10 +250,3 @@ function calcularTaximetro() {
 calcularTarifas();
 calcularViajeLargo();
 calcularTaximetro();
-
-
-
-
-
-
-
