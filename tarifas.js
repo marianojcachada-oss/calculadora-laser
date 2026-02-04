@@ -122,8 +122,9 @@ if (trabajoCalculado < 6) trabajoCalculado = 6;
 
 setValue(
   "trabajo",
-  money(trabajoCalculado + extraParadas, 2)
+  money(Math.round(trabajoCalculado + extraParadas))
 );
+
 
 /* ===== TRABAJO VAN ===== */
 
@@ -178,15 +179,17 @@ if (baseMascota < 6) baseMascota = 6;
 // 4️⃣ sumar paradas al final
 setValue(
   "mascota",
-  money(baseMascota + 4 + extraParadas, 2)
+  money(Math.round(baseMascota + 4 + extraParadas))
 );
+
 
 
 /* ===== SERVICIO CABLE AUXILIAR 🔌 ===== */
 setValue(
   "cable_auxiliar",
-  money(Math.max(base * factor, 10) + extraParadas, 2)
+  money(Math.round(cableBase + extraParadas))
 );
+
 }
 
 /* ================= VIAJE LARGO ================= */
@@ -253,4 +256,5 @@ function calcularTaximetro() {
 calcularTarifas();
 calcularViajeLargo();
 calcularTaximetro();
+
 
