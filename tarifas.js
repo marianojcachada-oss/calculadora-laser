@@ -72,15 +72,16 @@ function calcularTarifas() {
   setValue("clasificacion", txt);
   setValue("descuento", txt);
 
-  const conDescuento =
-  valorReal <= 6
-    ? 6 + extraParadas
-    : valorReal * factor + extraParadas;
+let conDescuentoBase = base * factor;
 
-  setValue(
+// mínimo absoluto
+if (conDescuentoBase < 6) conDescuentoBase = 6;
+
+setValue(
   "con_descuento",
-  money(conDescuento, 2)
-  );
+  money(conDescuentoBase + extraParadas, 2)
+);
+
 
 
   /* ===== Servicios especiales (con mínimos) ===== */
@@ -115,12 +116,14 @@ const trabajoBase = Math.max(base, 6);
 let trabajoFactor = base < 19.75 ? 0.8 : 0.75;
 
 // si queda en mínimo, NO se descuenta
-const trabajoFinal =
-  trabajoBase === 6
-    ? 6 + extraParadas
-    : trabajoBase * trabajoFactor + extraParadas;
+let trabajoCalculado = base * trabajoFactor;
 
-setValue("trabajo", money(trabajoFinal));
+if (trabajoCalculado < 6) trabajoCalculado = 6;
+
+setValue(
+  "trabajo",
+  money(trabajoCalculado + extraParadas, 2)
+);
 
 /* ===== TRABAJO VAN ===== */
 
@@ -250,3 +253,4 @@ function calcularTaximetro() {
 calcularTarifas();
 calcularViajeLargo();
 calcularTaximetro();
+
