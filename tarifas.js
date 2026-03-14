@@ -75,7 +75,7 @@ else if (base >= 100) {
 // mínimo base
 const trabajoBase = Math.max(base, 6);
 
-// descuento según tarifa
+// descuento según tarifa sin descuento
 let trabajoFactor = 0.9;
 
 if (base >= 50 && base <= 99.75) {
@@ -85,13 +85,11 @@ else if (base >= 100) {
   trabajoFactor = 0.80;
 }
 
-// calcular tarifa
-let trabajoCalculado = trabajoBase * trabajoFactor;
+// si queda en mínimo, NO se descuenta
+let trabajoCalculado = base * trabajoFactor;
 
-// respetar mínimo
 if (trabajoCalculado < 6) trabajoCalculado = 6;
 
-// sumar paradas al final y redondear
 setValue(
   "trabajo",
   money(Math.round(trabajoCalculado + extraParadas))
