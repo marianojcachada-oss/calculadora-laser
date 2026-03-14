@@ -13,7 +13,7 @@ function setValue(id, value) {
   if (!el) return;
   el.textContent = value;
   el.classList.remove("value-animate");
-  void el.offsetWidth; // reflow
+  void el.offsetWidth;
   el.classList.add("value-animate");
 }
 
@@ -42,165 +42,146 @@ function calcularTarifas() {
   const m = +out("millas").value || 0;
   const p = +out("paradas").value || 0;
 
-  // paradas SOLO al final
   const extraParadas = p === 1 ? 2 : p > 1 ? 2 + (p - 1) : 0;
 
   const valorReal = m * 2 + 2;
   const base = Math.max(valorReal, 6);
 
+  setValue("sin_descuento", money(base + extraParadas, 2));
 
-  setValue(
-  "sin_descuento",
-  money(base + extraParadas, 2)
-  );
+  /* ===== DESCUENTOS GENERALES ===== */
 
+  let factor = 0.9;
+  let txt = "10%";
 
-let factor = 0.9;
-let txt = "10%";
-
-if (base >= 50.00 && base <= 99.75) {
-  factor = 0.85;
-  txt = "15%";
-}
-else if (base >= 100) {
-  factor = 0.80;
-  txt = "20%";
-}
+  if (base >= 50 && base <= 99.75) {
+    factor = 0.85;
+    txt = "15%";
+  }
+  else if (base >= 100) {
+    factor = 0.80;
+    txt = "20%";
+  }
 
   setValue("clasificacion", txt);
   setValue("descuento", txt);
 
-/* ===== TRABAJO ===== */
+  let conDescuentoBase = base * factor;
 
-// mínimo base
-const trabajoBase = Math.max(base, 6);
+  if (conDescuentoBase < 6) conDescuentoBase = 6;
 
-// descuento según tarifa sin descuento
-let trabajoFactor = base < 19.75 ? 0.8 : 0.75;
+  setValue(
+    "con_descuento",
+    money(conDescuentoBase + extraParadas, 2)
+  );
 
-// si queda en mínimo, NO se descuenta
-let trabajoCalculado = base * trabajoFactor;
+  /* ===== TRABAJO ===== */
 
-if (trabajoCalculado < 6) trabajoCalculado = 6;
+  let trabajoCalculado = Math.max(base * factor, 6);
 
-setValue(
-  "trabajo",
-  money(Math.round(trabajoCalculado + extraParadas))
-);
+  setValue(
+    "trabajo",
+    money(Math.round(trabajoCalculado + extraParadas))
+  );
 
-// mínimo absoluto
-if (conDescuentoBase < 6) conDescuentoBase = 6;
+  /* ===== VAN ===== */
 
-setValue(
-  "con_descuento",
-  money(conDescuentoBase + extraParadas, 2)
-);
+  const vanBase = Math.max(base, 8);
 
+  let vanFactor = 1;
 
+  if (base >= 30 && base <= 49.75) {
+    vanFactor = 0.90;
+  }
+  else if (base >= 50 && base <= 99.75) {
+    vanFactor = 0.85;
+  }
+  else if (base >= 100) {
+    vanFactor = 0.80;
+  }
 
-  /* ===== Servicios especiales (con mínimos) ===== */
+  const vanFinal =
+    vanBase === 8
+      ? 8 + extraParadas
+      : vanBase * vanFactor + extraParadas;
 
-/* ===== VAN ===== */
+  setValue("van", money(vanFinal));
 
-// base VAN mínima
-const vanBase = Math.max(base, 8);
+  /* ===== TRABAJO VAN ===== */
 
-// descuento VAN según tarifa sin descuento
-let vanFactor = 1;
+  const trabajoVanBase = Math.max(base, 8);
 
-if (base >= 30 && base <= 49.75) {
-  vanFactor = 0.90;   // 10%
-}
-else if (base >= 50 && base <= 99.75) {
-  vanFactor = 0.85;   // 15%
-}
-else if (base >= 100) {
-  vanFactor = 0.80;   // 20%
-}
+  let trabajoVanFactor = 1;
 
-const vanFinal =
-  vanBase === 8
-    ? 8 + extraParadas
-    : vanBase * vanFactor + extraParadas;
+  if (base >= 30 && base <= 49.75) {
+    trabajoVanFactor = 0.90;
+  }
+  else if (base >= 50 && base <= 99.75) {
+    trabajoVanFactor = 0.85;
+  }
+  else if (base >= 100) {
+    trabajoVanFactor = 0.80;
+  }
 
-setValue("van", money(vanFinal));
+  const trabajoVanFinal =
+    trabajoVanBase === 8
+      ? 8 + extraParadas
+      : trabajoVanBase * trabajoVanFactor + extraParadas;
 
-/* ===== TRABAJO ===== */
+  setValue("trabajo_van", money(trabajoVanFinal));
 
-let trabajoCalculado = Math.max(base * factor, 6);
+  /* ===== DELIVERY COMIDA ===== */
 
-/* ===== TRABAJO VAN ===== */
-
-// mínimo base
-const trabajoVanBase = Math.max(base, 8);
-
-// descuento según tarifa sin descuento
-let trabajoVanFactor = base < 29.75 ? 0.9 : 0.85;
-
-// si queda en mínimo, NO se descuenta
-const trabajoVanFinal =
-  trabajoVanBase === 8
-    ? 8 + extraParadas
-    : trabajoVanBase * trabajoVanFactor + extraParadas;
-
-setValue("trabajo_van", money(trabajoVanFinal));
-
-
-  // Delivery comida mínimo 12
   setValue(
     "delivery_comida",
     money(Math.max((m <= 2.6 ? 12 : base * factor + 5) + extraParadas, 12))
   );
 
-  // Delivery alcohol mínimo 17
+  /* ===== DELIVERY ALCOHOL ===== */
+
   setValue(
     "delivery_alcohol",
     money(Math.max((m <= 4.8 ? 17 : base * factor + 7) + extraParadas, 17))
   );
 
-  // Objeto perdido mínimo 6
+  /* ===== OBJETO PERDIDO ===== */
+
   setValue(
-  "objeto",
-  money(Math.max(base * 0.75, 6) + extraParadas)
+    "objeto",
+    money(Math.max(base * 0.75, 6) + extraParadas)
   );
-  
-/* ===== SERVICIO PICK UP 🚚 ===== */
-setValue(
-  "servicio_pickup",
-  money(base + 20 + extraParadas)
-);
 
-/* ===== SERVICIO CON MASCOTA 🐕 ===== */
+  /* ===== PICK UP ===== */
 
-// 1️⃣ tarifa con descuento
-let baseMascota = base * factor;
+  setValue(
+    "servicio_pickup",
+    money(base + 20 + extraParadas)
+  );
 
-// 2️⃣ mínimo $6
-if (baseMascota < 6) baseMascota = 6;
+  /* ===== MASCOTA ===== */
 
-// 3️⃣ sumar extra mascota (+$4)
-// 4️⃣ sumar paradas al final
-setValue(
-  "mascota",
-  money(Math.round(baseMascota + 4 + extraParadas))
-);
+  let baseMascota = base * factor;
 
-/* ===== SERVICIO CABLE AUXILIAR 🔌 ===== */
+  if (baseMascota < 6) baseMascota = 6;
 
-// tarifa con descuento REAL (sin paradas)
-const tarifaConDescuentoBase =
-  valorReal <= 6
-    ? 6
-    : valorReal * factor;
+  setValue(
+    "mascota",
+    money(Math.round(baseMascota + 4 + extraParadas))
+  );
 
-// mínimo $10
-let cableBase = Math.max(tarifaConDescuentoBase, 10);
+  /* ===== CABLE AUXILIAR ===== */
 
-// sumar paradas al final y redondear
-setValue(
-  "cable_auxiliar",
-  money(Math.round(cableBase + extraParadas))
-);
+  const tarifaConDescuentoBase =
+    valorReal <= 6
+      ? 6
+      : valorReal * factor;
+
+  let cableBase = Math.max(tarifaConDescuentoBase, 10);
+
+  setValue(
+    "cable_auxiliar",
+    money(Math.round(cableBase + extraParadas))
+  );
 
 }
 
@@ -227,7 +208,9 @@ function calcularTaximetro() {
   const mf = +out("min_fin").value || 0;
 
   let base = 2;
+
   let distancia = Math.max(0, (m * 1760 - 50) / 260) * 0.25;
+
   let tiempo = Math.max(
     0,
     ((hf * 60 + mf) - (hi * 60 + mi)) * 60 / 50
@@ -236,6 +219,7 @@ function calcularTaximetro() {
   let total = base + distancia + tiempo;
 
   const d = total % 1;
+
   total = Math.floor(total) +
     (d <= 0.125 ? 0 :
      d < 0.375 ? 0.25 :
@@ -246,6 +230,7 @@ function calcularTaximetro() {
 }
 
 /* ================= LISTENERS ================= */
+
 ["millas", "paradas"].forEach(id =>
   out(id).addEventListener("input", calcularTarifas)
 );
@@ -265,9 +250,7 @@ function calcularTaximetro() {
 );
 
 /* ================= INIT ================= */
+
 calcularTarifas();
 calcularViajeLargo();
 calcularTaximetro();
-
-
-
