@@ -55,16 +55,17 @@ function calcularTarifas() {
   );
 
 
-  let factor = 0.9;
-  let txt = "10%";
+let factor = 0.9;
+let txt = "10%";
 
-  if (base >= 50 && base <= 99.75) {
-    factor = 0.85;
-    txt = "15%";
-  } else if (base >= 100) {
-    factor = 0.8;
-    txt = "20%";
-  } 
+if (base >= 50 && base <= 99.75) {
+  factor = 0.85;
+  txt = "15%";
+}
+else if (base >= 100) {
+  factor = 0.80;
+  txt = "20%";
+}
 
   setValue("clasificacion", txt);
   setValue("descuento", txt);
@@ -91,13 +92,14 @@ const vanBase = Math.max(base, 8);
 // descuento VAN según tarifa sin descuento
 let vanFactor = 1;
 
-if (base >= 29.76 && base <= 49.75) {
-  vanFactor = 0.9;   // 10%
-} else if (base >= 49.76 && base <= 99.75) {
-  vanFactor = 0.85;  // 15%
+if (base >= 30 && base <= 49.75) {
+  vanFactor = 0.90;   // 10%
 }
-  else if (base >= 99.76) {
-  vanFactor = 0.80;  // 20%
+else if (base >= 50 && base <= 99.75) {
+  vanFactor = 0.85;   // 15%
+}
+else if (base >= 100) {
+  vanFactor = 0.80;   // 20%
 }
 
 const vanFinal =
