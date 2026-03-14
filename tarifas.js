@@ -58,7 +58,7 @@ function calcularTarifas() {
 let factor = 0.9;
 let txt = "10%";
 
-if (base >= 50 && base <= 99.75) {
+if (base >= 50.00 && base <= 99.75) {
   factor = 0.85;
   txt = "15%";
 }
