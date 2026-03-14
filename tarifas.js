@@ -70,7 +70,33 @@ else if (base >= 100) {
   setValue("clasificacion", txt);
   setValue("descuento", txt);
 
-let conDescuentoBase = base * factor;
+/* ===== TRABAJO ===== */
+
+// mínimo base
+const trabajoBase = Math.max(base, 6);
+
+// descuento según tarifa
+let trabajoFactor = 0.9;
+
+if (base >= 50 && base <= 99.75) {
+  trabajoFactor = 0.85;
+}
+else if (base >= 100) {
+  trabajoFactor = 0.80;
+}
+
+// calcular tarifa
+let trabajoCalculado = trabajoBase * trabajoFactor;
+
+// respetar mínimo
+if (trabajoCalculado < 6) trabajoCalculado = 6;
+
+// sumar paradas al final y redondear
+setValue(
+  "trabajo",
+  money(Math.round(trabajoCalculado + extraParadas))
+);
+
 
 // mínimo absoluto
 if (conDescuentoBase < 6) conDescuentoBase = 6;
