@@ -111,22 +111,7 @@ setValue("van", money(vanFinal));
 
 /* ===== TRABAJO ===== */
 
-// mínimo base
-const trabajoBase = Math.max(base, 6);
-
-// descuento según tarifa sin descuento
-let trabajoFactor = base < 19.75 ? 0.8 : 0.75;
-
-// si queda en mínimo, NO se descuenta
-let trabajoCalculado = base * trabajoFactor;
-
-if (trabajoCalculado < 6) trabajoCalculado = 6;
-
-setValue(
-  "trabajo",
-  money(Math.round(trabajoCalculado + extraParadas))
-);
-
+let trabajoCalculado = Math.max(base * factor, 6);
 
 /* ===== TRABAJO VAN ===== */
 
