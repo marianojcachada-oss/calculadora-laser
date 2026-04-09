@@ -75,14 +75,26 @@ function calcularTarifas() {
     money(conDescuentoBase + extraParadas, 2)
   );
 
-  /* ===== TRABAJO ===== */
+/* ===== TRABAJO ===== */
 
-  let trabajoCalculado = Math.max(base * factor, 6);
+// definir factor propio de trabajo
+let trabajoFactor = 0.85; // 15% por defecto
 
-  setValue(
-    "trabajo",
-    money(Math.round(trabajoCalculado + extraParadas))
-  );
+if (base >= 50) {
+  trabajoFactor = 0.80; // 20%
+}
+
+// calcular
+let trabajoCalculado = base * trabajoFactor;
+
+// mínimo $6
+if (trabajoCalculado < 6) trabajoCalculado = 6;
+
+// resultado final
+setValue(
+  "trabajo",
+  money(Math.round(trabajoCalculado + extraParadas))
+);
 
   /* ===== VAN ===== */
 
