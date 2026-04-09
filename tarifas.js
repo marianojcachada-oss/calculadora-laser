@@ -43,7 +43,9 @@ function generarServicio() {
   const unidad = out("unidad")?.value || "";
 
   const millas = +out("millas").value || 0;
-
+  calcularTarifas();
+  generarServicio();
+  
   // tomar valor de trabajo ya calculado
   const trabajoTexto = out("trabajo").textContent || "$ 0";
 
