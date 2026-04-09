@@ -57,7 +57,7 @@ function generarServicio() {
   const resultado = 
 `DESDE : ${origen}
 HASTA : ${destino}
-#71 DE $${trabajoValor} CON ${millas}M 
+#71 DE $${trabajo} CON ${millas}M 
 
 ${unidad} ${fecha} AJUSTE`;
 
