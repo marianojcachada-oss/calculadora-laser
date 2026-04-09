@@ -62,6 +62,8 @@ HASTA : ${destino}
 ${unidad} ${fecha} AJUSTE`;
 
   out("resultado_servicio").value = resultado;
+  // 🔥 actualizar texto automáticamente
+generarServicio();
 }
 
 
