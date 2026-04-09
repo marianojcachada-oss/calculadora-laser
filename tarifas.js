@@ -63,6 +63,14 @@ function calcularTarifas() {
     txt = "20%";
   }
 
+  let factortrabajo = 0.85;
+  let txt = "15%";
+
+  if (base >= 50) {
+    factortrabajo = 0.80;
+    txt = "20%";
+  }
+
   setValue("clasificacion", txt);
   setValue("descuento", txt);
 
@@ -77,7 +85,7 @@ function calcularTarifas() {
 
   /* ===== TRABAJO ===== */
 
-  let trabajoCalculado = Math.max(base * factor, 6);
+  let trabajoCalculado = Math.max(base * factortrabajo, 6);
 
   setValue(
     "trabajo",
