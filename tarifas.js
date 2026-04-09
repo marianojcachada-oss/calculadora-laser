@@ -80,8 +80,11 @@ function calcularTarifas() {
 // definir factor propio de trabajo
 let trabajoFactor = 0.85; // 15% por defecto
 
-if (base >= 50) {
+if (base >= 50 && base < 100) {
   trabajoFactor = 0.80; // 20%
+} 
+else if (base >= 100) {
+  trabajoFactor = 0.75; // 25%
 }
 
 // calcular
