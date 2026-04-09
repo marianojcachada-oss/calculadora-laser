@@ -36,6 +36,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+function generarServicio() {
+
+  const origen = out("origen")?.value || "";
+  const destino = out("destino")?.value || "";
+  const unidad = out("unidad")?.value || "";
+
+  const millas = +out("millas").value || 0;
+
+  // tomar valor de trabajo ya calculado
+  const trabajoTexto = out("trabajo").textContent || "$ 0";
+
+  // limpiar formato "$ "
+  const trabajoValor = trabajoTexto.replace("$ ", "");
+
+  // fecha automática
+  const hoy = new Date();
+  const fecha = `${hoy.getDate()}/${hoy.getMonth()+1}/${String(hoy.getFullYear()).slice(2)}`;
+
+  const resultado = 
+`DESDE : ${origen}
+HASTA : ${destino}
+#71 DE $${trabajoValor} CON ${millas}M 
+
+${unidad} ${fecha} AJUSTE`;
+
+  out("resultado_servicio").value = resultado;
+}
+
+["origen", "destino", "unidad", "millas", "paradas"].forEach(id => {
+  const el = out(id);
+  if (el) el.addEventListener("input", generarServicio);
+});
+
+
 /* ================= TARIFAS ================= */
 function calcularTarifas() {
 
@@ -251,3 +285,4 @@ function calcularTaximetro() {
 
 calcularTarifas();
 calcularTaximetro();
+generarServicio();
