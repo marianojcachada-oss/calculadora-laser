@@ -197,19 +197,6 @@ setValue(
 
 }
 
-/* ================= VIAJE LARGO ================= */
-function calcularViajeLargo() {
-
-  const h = +out("horas").value || 0;
-  const min = +out("minutos").value || 0;
-
-  const totalMin = h * 60 + min;
-  const base = totalMin * 90 / 60;
-
-  setValue("viaje_largo", money(base, 2));
-  setValue("viaje_largo_rt", money(base * 2 * 0.75 + 2, 2));
-}
-
 /* ================= TAXIMETRO ================= */
 function calcularTaximetro() {
 
@@ -247,10 +234,6 @@ function calcularTaximetro() {
   out(id).addEventListener("input", calcularTarifas)
 );
 
-["horas", "minutos"].forEach(id =>
-  out(id).addEventListener("input", calcularViajeLargo)
-);
-
 [
   "millas_taximetro",
   "hora_inicio",
@@ -264,5 +247,4 @@ function calcularTaximetro() {
 /* ================= INIT ================= */
 
 calcularTarifas();
-calcularViajeLargo();
 calcularTaximetro();
