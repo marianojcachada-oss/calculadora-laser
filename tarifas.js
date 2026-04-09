@@ -44,9 +44,8 @@ function generarServicio() {
 
   const millas = +out("millas").value || 0;
 
-  
   // tomar valor de trabajo ya calculado
-  const trabajoTexto = out("trabajo").textContent || "$ 0";
+  const trabajoTexto = out("trabajo")?.textContent || "$ 0";
 
   // limpiar formato "$ "
   const trabajoValor = trabajoTexto.replace("$ ", "");
@@ -58,17 +57,12 @@ function generarServicio() {
   const resultado = 
 `DESDE : ${origen}
 HASTA : ${destino}
-#71 DE $${trabajo} CON ${millas}M 
+#71 DE $${trabajoValor} CON ${millas}M 
 
 ${unidad} ${fecha} AJUSTE`;
 
   out("resultado_servicio").value = resultado;
 }
-
-["origen", "destino", "unidad", "millas", "paradas"].forEach(id => {
-  const el = out(id);
-  if (el) el.addEventListener("input", generarServicio);
-});
 
 
 /* ================= TARIFAS ================= */
@@ -228,11 +222,13 @@ setValue(
 
   let cableBase = Math.max(tarifaConDescuentoBase, 10);
 
-  setValue(
-    "cable_auxiliar",
-    money(Math.round(cableBase + extraParadas))
-  );
+setValue(
+  "cable_auxiliar",
+  money(Math.round(cableBase + extraParadas))
+);
 
+// 🔥 actualizar texto automáticamente
+generarServicio();
 }
 
 /* ================= TAXIMETRO ================= */
@@ -286,4 +282,3 @@ function calcularTaximetro() {
 
 calcularTarifas();
 calcularTaximetro();
-generarServicio();
