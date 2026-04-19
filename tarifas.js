@@ -90,8 +90,8 @@ function calcularTarifas() {
     txt = "15%";
   }
   else if (base >= 100) {
-    factor = 0.80;
-    txt = "20%";
+    factor = 0.75;
+    txt = "25%";
   }
 
   setValue("clasificacion", txt);
