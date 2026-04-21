@@ -82,12 +82,12 @@ function calcularTarifas() {
 
   /* ===== DESCUENTOS GENERALES ===== */
 
-  let factor = 0.9;
-  let txt = "10%";
+  let factor = 0.85;
+  let txt = "15%";
 
   if (base >= 50 && base <= 99.75) {
-    factor = 0.85;
-    txt = "15%";
+    factor = 0.80;
+    txt = "20%";
   }
   else if (base >= 100) {
     factor = 0.75;
