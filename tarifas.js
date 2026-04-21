@@ -134,7 +134,7 @@ setValue(
 
   const vanBase = Math.max(base, 8);
 
-  let vanFactor = 1;
+  let vanFactor = 0.95;
 
   if (base >= 30 && base <= 49.75) {
     vanFactor = 0.90;
