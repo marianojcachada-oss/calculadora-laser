@@ -55,11 +55,12 @@ function generarServicio() {
   const fecha = `${hoy.getDate()}/${hoy.getMonth()+1}/${String(hoy.getFullYear()).slice(2)}`;
 
   const resultado = 
-`DESDE : ${origen}
+`>>>TARIFA DE TRABAJO<<<
+DESDE : ${origen}
 HASTA : ${destino}
 #71 DE $${trabajoValor} CON ${millas}M 
 
-${unidad} ${fecha} AJUSTE`;
+${unidad} ${fecha} DE CREACIÓN`;
 
   out("resultado_servicio").value = resultado;
   // 🔥 actualizar texto automáticamente
