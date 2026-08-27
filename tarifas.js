@@ -56,8 +56,8 @@ function generarServicio() {
 
   const resultado = 
 `>>>TARIFA DE TRABAJO<<<
-DESDE : ${origen}
-HASTA : ${destino}
+ORIGEN : ${origen}
+DESTINO : ${destino}
 #71 DE $${trabajoValor} CON ${millas}M 
 
 ${unidad} ${fecha} DE CREACIÓN`;
