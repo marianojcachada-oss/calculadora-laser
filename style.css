@@ -322,6 +322,24 @@ h3::before {
 .grid > div.trabajocss {
   background: var(--magenta-soft);
   border: 1px solid rgba(255, 46, 151, 0.35);
+  animation: trabajoBreathe 3.2s ease-in-out infinite;
+}
+
+@keyframes trabajoBreathe {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(255, 46, 151, 0.12);
+    border-color: rgba(255, 46, 151, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(255, 46, 151, 0.32);
+    border-color: rgba(255, 46, 151, 0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid > div.trabajocss {
+    animation: none;
+  }
 }
 
 .grid > div.trabajocss span::after {
