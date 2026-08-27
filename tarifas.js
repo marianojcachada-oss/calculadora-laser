@@ -83,10 +83,14 @@ function calcularTarifas() {
 
   /* ===== DESCUENTOS GENERALES ===== */
 
-  let factor = 0.85;
-  let txt = "15%";
+  let factor = 0.90;
+  let txt = "10%";
 
-  if (base >= 50 && base <= 99.75) {
+  if (base >= 20 && base <= 49.75) {
+    factor = 0.85;
+    txt = "15%";
+  }
+  else if (base >= 50 && base <= 99.75) {
     factor = 0.80;
     txt = "20%";
   }
@@ -110,11 +114,14 @@ function calcularTarifas() {
 /* ===== TRABAJO ===== */
 
 // definir factor propio de trabajo
-let trabajoFactor = 0.85; // 15% por defecto
+let trabajoFactor = 0.90; // 10% por defecto (0 a 19,75)
 
-if (base >= 50 && base < 100) {
+if (base >= 20 && base < 50) {
+  trabajoFactor = 0.85; // 15%
+}
+else if (base >= 50 && base < 100) {
   trabajoFactor = 0.80; // 20%
-} 
+}
 else if (base >= 100) {
   trabajoFactor = 0.75; // 25%
 }
