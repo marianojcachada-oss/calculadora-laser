@@ -1,61 +1,72 @@
 :root {
-  --bg: #0f172a;               /* fondo principal */
-  --card: #020617;             /* tarjetas */
-  --muted: #94a3b8;            /* texto secundario */
-  --text: #e5e7eb;             /* texto principal */
-  --accent: #22c55e;           /* verde acción */
-  --accent-soft: #14532d;
-  --primary: #0ea5e9;           /* azul */
-  --border: #1e293b;
+  --paper: #f6f7f4;
+  --surface: #ffffff;
+  --ink: #14181f;
+  --muted: #6e7580;
+  --muted-soft: #9aa0a8;
+  --line: rgba(20, 24, 31, 0.10);
+  --line-strong: rgba(20, 24, 31, 0.18);
+  --accent: #a6620a;
+  --accent-ink: #5c3705;
+  --accent-soft: rgba(166, 98, 10, 0.08);
+  --radius: 10px;
 }
 
 * {
   box-sizing: border-box;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at top, #020617, #020617 40%, #020617);
+  background: var(--paper);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  color: var(--text);
+  color: var(--ink);
 }
 
 .shell {
   width: 100%;
-  max-width: 980px;
-  padding: 24px;
+  max-width: 720px;
+  padding: 48px 24px;
 }
 
 .card {
-  background: linear-gradient(180deg, #020617, #020617);
-  border-radius: 18px;
-  border: 1px solid var(--border);
-  box-shadow: 0 20px 40px rgba(0,0,0,.5);
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(20, 24, 31, 0.04);
   overflow: hidden;
 }
 
 .card-header {
-  padding: 24px 28px;
-  background: linear-gradient(90deg, #020617, #020617);
-  font-size: 22px;
+  padding: 22px 28px;
+  border-bottom: 1px solid var(--line);
+  font-family: "Space Grotesk", "IBM Plex Sans", sans-serif;
+  font-size: 19px;
   font-weight: 600;
+  letter-spacing: -0.01em;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
 }
 
 .card-header span {
-  font-size: 13px;
-  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-soft);
 }
 
 .card-body {
   padding: 28px;
 }
+
+/* ================= INPUTS ================= */
 
 .inputs {
   display: grid;
@@ -66,41 +77,56 @@ body {
 
 .inputs label {
   display: block;
-  font-size: 13px;
-  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
   color: var(--muted);
 }
 
 .inputs input {
   width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  background: #020617;
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-size: 18px;
+  padding: 10px 2px;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.15s ease;
+}
+
+.inputs input::placeholder {
+  color: var(--muted-soft);
+  font-family: "IBM Plex Sans", sans-serif;
 }
 
 .inputs input:focus {
   outline: none;
-  border-color: var(--primary);
+  border-bottom-color: var(--accent);
 }
 
+/* ================= RESULT ROWS ================= */
+
 .results {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
   margin-bottom: 32px;
+  border-top: 1px solid var(--line);
 }
 
 .results div {
-  background: #020617;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px 18px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 13px 2px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
 }
 
 .results span {
@@ -109,43 +135,61 @@ body {
 }
 
 .results strong {
-  font-size: 18px;
+  font-family: "IBM Plex Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .results .total {
-  grid-column: span 2;
-  background: linear-gradient(90deg, #020617, #020617);
-  border: 1px solid var(--accent-soft);
-  outline: 1px solid rgba(255,255,255,0.15);
-  outline-offset: -2px;
+  grid-column: unset;
+  background: var(--accent-soft);
+  border: none;
+  border-radius: 8px;
+  padding: 16px 14px;
+  margin-top: 6px;
+}
+
+.results .total span {
+  color: var(--accent-ink);
+  font-weight: 500;
 }
 
 .results .total strong {
-  font-size: 24px;
+  font-size: 22px;
   color: var(--accent);
+  font-weight: 600;
 }
 
 h3 {
-  font-size: 16px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
   font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 16px;
+  margin: 0 0 14px 0;
+  padding-top: 4px;
 }
 
+/* ================= SERVICIOS ESPECIALES ================= */
+
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line);
+  margin-bottom: 32px;
 }
 
 .grid div {
-  background: #020617;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 12px 2px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
 }
 
 .grid span {
@@ -154,17 +198,15 @@ h3 {
 }
 
 .grid strong {
-  font-size: 17px;
+  font-family: "IBM Plex Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 15px;
+  font-weight: 500;
 }
 
 @media (max-width: 700px) {
-  .inputs,
-  .results {
+  .inputs {
     grid-template-columns: 1fr;
-  }
-
-  .results .total {
-    grid-column: 1;
   }
 }
 
@@ -172,42 +214,39 @@ h3 {
 
 .tabs {
   display: flex;
-  gap: 10px;
-  margin: 20px 0 28px 0;
-
-  /* 👇 clave para la alineación */
-  padding: 0 6px;
+  gap: 24px;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--line);
 }
 
 .tab {
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #9ca3af;
-  padding: 8px 18px;
-  border-radius: 10px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  padding: 14px 0;
+  margin-bottom: -1px;
   cursor: pointer;
+  font-family: "IBM Plex Sans", sans-serif;
   font-size: 14px;
   font-weight: 500;
-  transition: all .2s ease;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .tab:hover {
-  border-color: #22c55e;
-  color: #e5e7eb;
+  color: var(--ink);
 }
 
 .tab.active {
-  background: rgba(34,197,94,0.15);
-  color: #22c55e;
-  border-color: #22c55e;
+  color: var(--accent);
+  border-bottom-color: var(--accent);
 }
-
 
 .tab-content {
   display: none;
   opacity: 0;
-  transform: translateY(6px);
-  transition: opacity .25s ease, transform .25s ease;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .tab-content.active {
@@ -216,30 +255,74 @@ h3 {
   transform: translateY(0);
 }
 
-@keyframes valuePulse {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.05); }
-  100% { transform: scale(1); }
+/* ================= VALUE ANIMATION ================= */
+
+@keyframes valueTick {
+  0% { opacity: 0.35; }
+  100% { opacity: 1; }
 }
 
 .value-animate {
-  animation: valuePulse .25s ease;
+  animation: valueTick 0.2s ease;
 }
 
+/* ================= TRABAJO (fila destacada) ================= */
+
 .grid > div.trabajocss {
-  border: 2.5px solid #2563eb;
-  border-radius: 14px;
-  padding: 10px 12px;
-  background: linear-gradient(
-    90deg,
-    rgba(37, 99, 235, 0.15),
-    rgba(37, 99, 235, 0.05)
-  );
+  border-bottom: 1px solid var(--line);
+  background: var(--accent-soft);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 2px 0;
+}
+
+.grid > div.trabajocss span::after {
+  content: "· interno";
+  margin-left: 6px;
+  font-size: 11px;
+  color: var(--accent-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .grid > div.trabajocss strong {
-  font-weight: 700;
-  color: #93c5fd;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* ================= GENERADOR DE SERVICIO ================= */
+
+textarea#resultado_servicio {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+textarea#resultado_servicio:focus {
+  outline: none;
+}
+
+button[onclick] {
+  margin-top: 16px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+button[onclick]:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 
