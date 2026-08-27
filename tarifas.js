@@ -252,7 +252,7 @@ function calcularTaximetro() {
 
   let base = 2;
 
-  let distancia = Math.max(0, (m * 1760 - 50) / 260) * 0.25;
+  let distancia = Math.max(0, (m * 1760 - 50) / 252) * 0.25;
 
   let tiempo = Math.max(
     0,
