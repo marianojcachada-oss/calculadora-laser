@@ -2,7 +2,6 @@
   --bg: #060810;
   --bg-grid-line: rgba(45, 226, 255, 0.05);
   --surface: #0b1019;
-  --surface-raised: #10182390;
   --ink: #d9e6f2;
   --muted: #62778c;
   --muted-soft: #3f5064;
@@ -38,8 +37,8 @@ body {
 
 .shell {
   width: 100%;
-  max-width: 760px;
-  padding: 48px 24px;
+  max-width: 980px;
+  padding: 32px 24px;
 }
 
 .card {
@@ -145,24 +144,23 @@ body {
   box-shadow: 0 0 0 1px var(--cyan), 0 0 16px var(--cyan-glow);
 }
 
-/* ================= RESULT ROWS ================= */
+/* ================= RESULT GRID (boxes, 2 columnas) ================= */
 
 .results {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 30px;
-  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 26px;
 }
 
 .results div {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--line);
-  border-radius: 0;
-  padding: 13px 2px;
+  background: #0a0f18;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px;
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
 }
 
 .results span {
@@ -180,12 +178,9 @@ body {
 }
 
 .results .total {
-  grid-column: unset;
+  grid-column: span 2;
   background: linear-gradient(90deg, rgba(255, 183, 3, 0.08), transparent);
   border: 1px solid rgba(255, 183, 3, 0.35);
-  border-radius: var(--radius);
-  padding: 16px 14px;
-  margin-top: 8px;
 }
 
 .results .total span {
@@ -217,24 +212,23 @@ h3::before {
   color: var(--cyan);
 }
 
-/* ================= SERVICIOS ESPECIALES ================= */
+/* ================= SERVICIOS ESPECIALES (grid boxes) ================= */
 
 .grid {
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid var(--line);
-  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+  margin-bottom: 26px;
 }
 
 .grid div {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--line);
-  border-radius: 0;
-  padding: 12px 2px;
+  background: #0a0f18;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 13px 15px;
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
 }
 
 .grid span {
@@ -251,8 +245,14 @@ h3::before {
 }
 
 @media (max-width: 700px) {
-  .inputs {
+  .inputs,
+  .results,
+  .grid {
     grid-template-columns: 1fr;
+  }
+
+  .results .total {
+    grid-column: 1;
   }
 }
 
@@ -320,12 +320,8 @@ h3::before {
 /* ================= TRABAJO (fila destacada) ================= */
 
 .grid > div.trabajocss {
-  border-bottom: 1px solid var(--line);
   background: var(--magenta-soft);
   border: 1px solid rgba(255, 46, 151, 0.35);
-  border-radius: var(--radius);
-  padding: 12px 14px;
-  margin: 2px 0;
 }
 
 .grid > div.trabajocss span::after {
