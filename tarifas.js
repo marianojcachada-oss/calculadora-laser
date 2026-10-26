@@ -1,3 +1,29 @@
+/* ================= CONFIGURACIÓN (TARIFARIO TAXI LASER) ================= */
+
+// Hora de referencia: Atlanta
+const ZONA_HORARIA = "America/New_York";
+
+// Descuento único del tarifario (solo en los horarios que lo permiten)
+const ESCALAS_TARIFA = [
+  { desde: 0, factor: 0.90, txt: "10%" }
+];
+
+// Van: mínima $8; menos de $29.75 sin descuento; igual o mayor a $30, 10% de descuento
+const VAN_MINIMA = 8;
+const ESCALAS_VAN = [
+  { desde: 30, factor: 0.90 },
+  { desde: 0,  factor: 1 }
+];
+
+// Sitio nocturno (bares y discotecas)
+const MINIMA_SITIO_NOCTURNO = 15;
+
+// Extra por carga grande o mudanza (SUV, Van o Truck)
+const EXTRA_CARGA_MIN = 10;
+const EXTRA_CARGA_MAX = 30;
+
+const DIAS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
 /* ================= HELPERS ================= */
 function out(id) {
   return document.getElementById(id);
@@ -15,6 +41,164 @@ function setValue(id, value) {
   el.classList.remove("value-animate");
   void el.offsetWidth;
   el.classList.add("value-animate");
+}
+
+function escala(tabla, monto) {
+  return tabla.find(e => monto >= e.desde);
+}
+
+function minutos(h, m) {
+  return h * 60 + m;
+}
+
+function enRango(min, desdeH, desdeM, hastaH, hastaM) {
+  return min >= minutos(desdeH, desdeM) && min <= minutos(hastaH, hastaM);
+}
+
+/* ================= DÍA Y HORA DEL SERVICIO ================= */
+
+// Día (0 = domingo) y hora actuales en Atlanta
+function ahoraEnAtlanta() {
+  const partes = new Intl.DateTimeFormat("en-US", {
+    timeZone: ZONA_HORARIA,
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23"
+  }).formatToParts(new Date());
+
+  const get = tipo => partes.find(p => p.type === tipo).value;
+  const dia = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
+
+  return { dia, hora: +get("hour"), min: +get("minute") };
+}
+
+// Completa día y hora con el momento actual si los campos existen y están vacíos
+function cargarAhora() {
+  const ahora = ahoraEnAtlanta();
+  const dia = out("dia_servicio");
+  const hora = out("hora_servicio");
+
+  if (dia) dia.value = String(ahora.dia);
+  if (hora) {
+    hora.value =
+      String(ahora.hora).padStart(2, "0") + ":" + String(ahora.min).padStart(2, "0");
+  }
+}
+
+// Lee el día y la hora elegidos; si faltan los campos, usa la hora actual de Atlanta
+function leerMomento() {
+  const ahora = ahoraEnAtlanta();
+  const diaEl = out("dia_servicio");
+  const horaEl = out("hora_servicio");
+
+  const dia = diaEl && diaEl.value !== "" ? +diaEl.value : ahora.dia;
+
+  let hora = ahora.hora;
+  let min = ahora.min;
+  if (horaEl && horaEl.value) {
+    const [h, m] = horaEl.value.split(":");
+    hora = +h;
+    min = +m;
+  }
+
+  return { dia, hora, min };
+}
+
+/*
+  Reglas de cobro del tarifario según día y horario.
+  descuento: "si"     → se aplica descuento
+             "desde20" → solo a servicios de $20 en adelante
+             "no"     → sin descuento
+  nocturno:  true si corresponde la mínima de sitio nocturno (bares y discotecas)
+  dias / franja: días y horario en que vale la regla (para el texto del servicio)
+  franjaNocturna: horario del sitio nocturno, cuando corresponde
+*/
+function reglasHorario(dia, hora, min) {
+  const t = minutos(hora, min);
+  const madrugada = enRango(t, 0, 0, 5, 59);
+  const noche = enRango(t, 22, 0, 23, 59);
+
+  const MADRUGADA = "12:00 AM A 5:59 AM";
+  const NOCHE = "10:00 PM A 11:59 PM";
+
+  // Lunes a viernes
+  if (dia >= 1 && dia <= 5) {
+    const dias = "LUNES A VIERNES";
+    if (madrugada) {
+      return {
+        minima: 8,
+        descuento: "no",
+        nocturno: dia === 1 && enRango(t, 1, 0, 2, 59),
+        dias,
+        franja: MADRUGADA,
+        diasNocturno: "LUNES",
+        franjaNocturna: "1:00 AM A 2:59 AM"
+      };
+    }
+    if (noche) return { minima: 6, descuento: "no", nocturno: false, dias, franja: NOCHE };
+    return { minima: 6, descuento: "si", nocturno: false, dias, franja: "6:00 AM A 9:59 PM" };
+  }
+
+  // Sábado
+  if (dia === 6) {
+    const dias = "SÁBADO";
+    if (madrugada) {
+      return {
+        minima: 8,
+        descuento: "no",
+        nocturno: enRango(t, 2, 0, 3, 59),
+        dias,
+        franja: MADRUGADA,
+        diasNocturno: dias,
+        franjaNocturna: "2:00 AM A 3:59 AM"
+      };
+    }
+    if (enRango(t, 6, 0, 18, 59)) {
+      return { minima: 6, descuento: "si", nocturno: false, dias, franja: "6:00 AM A 6:59 PM" };
+    }
+    if (enRango(t, 19, 0, 21, 59)) {
+      return { minima: 6, descuento: "desde20", nocturno: false, dias, franja: "7:00 PM A 9:59 PM" };
+    }
+    return { minima: 6, descuento: "no", nocturno: false, dias, franja: NOCHE };
+  }
+
+  // Domingo
+  const dias = "DOMINGO";
+  if (madrugada) {
+    return {
+      minima: 8,
+      descuento: "no",
+      nocturno: enRango(t, 2, 0, 3, 59),
+      dias,
+      franja: MADRUGADA,
+      diasNocturno: dias,
+      franjaNocturna: "2:00 AM A 3:59 AM"
+    };
+  }
+  if (noche) return { minima: 6, descuento: "no", nocturno: false, dias, franja: NOCHE };
+  return { minima: 6, descuento: "desde20", nocturno: false, dias, franja: "6:00 AM A 9:59 PM" };
+}
+
+// Última regla calculada, para armar el texto del servicio
+let ultimaRegla = null;
+
+function textoRegla(momento, regla, sitioNocturno) {
+  const hora =
+    String(momento.hora).padStart(2, "0") + ":" + String(momento.min).padStart(2, "0");
+
+  let detalle;
+  if (sitioNocturno) {
+    detalle = `mínima $${MINIMA_SITIO_NOCTURNO} (sitio nocturno), sin descuento`;
+  } else if (regla.descuento === "si") {
+    detalle = `mínima $${regla.minima}, con descuento`;
+  } else if (regla.descuento === "desde20") {
+    detalle = `mínima $${regla.minima}, descuento solo desde $20`;
+  } else {
+    detalle = `mínima $${regla.minima}, sin descuento`;
+  }
+
+  return `${DIAS[momento.dia]} ${hora} · ${detalle}`;
 }
 
 /* ================= TABS ================= */
@@ -36,6 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+/* ================= TEXTO DEL SERVICIO ================= */
 function generarServicio() {
 
   const origen = out("origen")?.value || "";
@@ -52,21 +237,36 @@ function generarServicio() {
 
   // fecha automática
   const hoy = new Date();
-  const fecha = `${hoy.getDate()}/${hoy.getMonth()+1}/${String(hoy.getFullYear()).slice(2)}`;
+  const fecha = `${hoy.getDate()}/${hoy.getMonth() + 1}/${String(hoy.getFullYear()).slice(2)}`;
 
-  const resultado = 
+  // días y horario en que vale la tarifa de trabajo
+  let vigencia = "";
+  if (ultimaRegla) {
+    const { regla, sitioNocturno, aplicaDescuento } = ultimaRegla;
+    const dias = sitioNocturno ? regla.diasNocturno : regla.dias;
+    const franja = sitioNocturno ? regla.franjaNocturna : regla.franja;
+    const condicion = sitioNocturno
+      ? `SITIO NOCTURNO, MÍNIMA $${MINIMA_SITIO_NOCTURNO}, SIN DESCUENTO`
+      : aplicaDescuento
+        ? "CON 10% DE DESCUENTO"
+        : "SIN DESCUENTO";
+
+    vigencia =
+`\nLA TARIFA DE TRABAJO SOLO FUNCIONA LOS DÍAS ${dias} DE ${franja} (${condicion}).
+FUERA DE ESE DÍA Y HORARIO SE RECALCULA SEGÚN EL TARIFARIO.`;
+  }
+
+  const resultado =
 `>>>TARIFA DE TRABAJO<<<
 ORIGEN : ${origen}
 DESTINO : ${destino}
-#71 DE $${trabajoValor} CON ${millas}M 
+#71 DE $${trabajoValor} CON ${millas}M ${vigencia}
 
 ${unidad} ${fecha} DE CREACIÓN`;
 
-  out("resultado_servicio").value = resultado;
-  // 🔥 actualizar texto automáticamente
-generarServicio();
+  const destinoTexto = out("resultado_servicio");
+  if (destinoTexto) destinoTexto.value = resultado;
 }
-
 
 /* ================= TARIFAS ================= */
 function calcularTarifas() {
@@ -76,169 +276,110 @@ function calcularTarifas() {
 
   const extraParadas = p === 1 ? 2 : p > 1 ? 2 + (p - 1) : 0;
 
+  // Extra por carga grande o mudanza: entre $10 y $30 (0 = sin extra)
+  let extraCarga = +out("extra_carga")?.value || 0;
+  if (extraCarga > 0) {
+    extraCarga = Math.min(Math.max(extraCarga, EXTRA_CARGA_MIN), EXTRA_CARGA_MAX);
+  }
+
   const valorReal = m * 2 + 2;
-  const base = Math.max(valorReal, 6);
 
-  setValue("sin_descuento", money(base + extraParadas, 2));
+  /* ===== REGLAS POR DÍA Y HORARIO ===== */
 
-  /* ===== DESCUENTOS GENERALES ===== */
+  const momento = leerMomento();
+  const regla = reglasHorario(momento.dia, momento.hora, momento.min);
+  const sitioNocturno = regla.nocturno && !!out("sitio_nocturno")?.checked;
 
-  let factor = 0.90;
-  let txt = "10%";
+  const minima = sitioNocturno ? MINIMA_SITIO_NOCTURNO : regla.minima;
+  const base = Math.max(valorReal, minima);
 
-  if (base >= 20 && base <= 49.75) {
-    factor = 0.85;
-    txt = "15%";
-  }
-  else if (base >= 50 && base <= 99.75) {
-    factor = 0.80;
-    txt = "20%";
-  }
-  else if (base >= 100) {
-    factor = 0.75;
-    txt = "25%";
-  }
+  let aplicaDescuento = !sitioNocturno && regla.descuento !== "no";
+  if (regla.descuento === "desde20" && base < 20) aplicaDescuento = false;
 
+  const esc = escala(ESCALAS_TARIFA, base);
+  const factor = aplicaDescuento ? esc.factor : 1;
+  const txt = aplicaDescuento ? esc.txt : "Sin descuento";
+
+  ultimaRegla = { regla, sitioNocturno, aplicaDescuento };
+
+  setValue("regla_horario", textoRegla(momento, regla, sitioNocturno));
   setValue("clasificacion", txt);
   setValue("descuento", txt);
 
-  let conDescuentoBase = base * factor;
+  /* ===== TARIFA ===== */
 
-  if (conDescuentoBase < 6) conDescuentoBase = 6;
+  setValue("sin_descuento", money(base + extraParadas + extraCarga, 2));
+
+  const conDescuentoBase = Math.max(base * factor, minima);
 
   setValue(
     "con_descuento",
-    money(conDescuentoBase + extraParadas, 2)
+    money(conDescuentoBase + extraParadas + extraCarga, 2)
   );
 
-/* ===== TRABAJO ===== */
+  /* ===== TRABAJO ===== */
 
-// definir factor propio de trabajo
-let trabajoFactor = 0.90; // 10% por defecto (0 a 19,75)
+  setValue(
+    "trabajo",
+    money(Math.round(conDescuentoBase + extraParadas + extraCarga))
+  );
 
-if (base >= 20 && base < 50) {
-  trabajoFactor = 0.85; // 15%
-}
-else if (base >= 50 && base < 100) {
-  trabajoFactor = 0.80; // 20%
-}
-else if (base >= 100) {
-  trabajoFactor = 0.75; // 25%
-}
+  /* ===== VAN Y TRABAJO VAN ===== */
 
-// calcular
-let trabajoCalculado = base * trabajoFactor;
-
-// mínimo $6
-if (trabajoCalculado < 6) trabajoCalculado = 6;
-
-// resultado final
-setValue(
-  "trabajo",
-  money(Math.round(trabajoCalculado + extraParadas))
-);
-
-  /* ===== VAN ===== */
-
-  const vanBase = Math.max(base, 8);
-
-  let vanFactor = 0.95;
-
-  if (base >= 30 && base <= 49.75) {
-    vanFactor = 0.90;
-  }
-  else if (base >= 50 && base <= 99.75) {
-    vanFactor = 0.85;
-  }
-  else if (base >= 100) {
-    vanFactor = 0.80;
-  }
-
-  const vanFinal =
-    vanBase === 8
-      ? 8 + extraParadas
-      : vanBase * vanFactor + extraParadas;
+  const vanBase = Math.max(valorReal, VAN_MINIMA);
+  const vanFinal = vanBase * escala(ESCALAS_VAN, vanBase).factor + extraParadas + extraCarga;
 
   setValue("van", money(vanFinal));
+  setValue("trabajo_van", money(vanFinal));
 
-  /* ===== TRABAJO VAN ===== */
+  /* ===== SERVICIOS QUE NO CUBRE EL TARIFARIO (sin cambios) ===== */
 
-  const trabajoVanBase = Math.max(base, 8);
-
-  let trabajoVanFactor = 1;
-
-  if (base >= 30 && base <= 49.75) {
-    trabajoVanFactor = 0.90;
-  }
-  else if (base >= 50 && base <= 99.75) {
-    trabajoVanFactor = 0.85;
-  }
-  else if (base >= 100) {
-    trabajoVanFactor = 0.80;
-  }
-
-  const trabajoVanFinal =
-    trabajoVanBase === 8
-      ? 8 + extraParadas
-      : trabajoVanBase * trabajoVanFactor + extraParadas;
-
-  setValue("trabajo_van", money(trabajoVanFinal));
+  const baseGeneral = Math.max(valorReal, 6);
 
   /* ===== DELIVERY COMIDA ===== */
 
   setValue(
     "delivery_comida",
-    money(Math.max((m <= 2.6 ? 12 : base * factor + 5) + extraParadas, 12))
+    money(Math.max((m <= 2.6 ? 12 : baseGeneral * factor + 5) + extraParadas, 12))
   );
 
   /* ===== DELIVERY ALCOHOL ===== */
 
   setValue(
     "delivery_alcohol",
-    money(Math.max((m <= 4.8 ? 17 : base * factor + 7) + extraParadas, 17))
+    money(Math.max((m <= 4.8 ? 17 : baseGeneral * factor + 7) + extraParadas, 17))
   );
 
-  /* ===== OBJETO PERDIDO ===== */
+  /* ===== OBJETO PERDIDO (10% de descuento, según horario) ===== */
 
   setValue(
     "objeto",
-    money(Math.max(base * 0.75, 6) + extraParadas)
+    money(Math.max(Math.max(valorReal, regla.minima) * factor, regla.minima) + extraParadas)
   );
 
   /* ===== PICK UP ===== */
 
   setValue(
     "servicio_pickup",
-    money(base + 20 + extraParadas)
+    money(baseGeneral + 20 + extraParadas)
   );
 
   /* ===== MASCOTA ===== */
 
-  let baseMascota = base * factor;
-
-  if (baseMascota < 6) baseMascota = 6;
-
   setValue(
     "mascota",
-    money(Math.round(baseMascota + 4 + extraParadas))
+    money(Math.round(conDescuentoBase + 4 + extraParadas))
   );
 
   /* ===== CABLE AUXILIAR ===== */
 
-  const tarifaConDescuentoBase =
-    valorReal <= 6
-      ? 6
-      : valorReal * factor;
+  setValue(
+    "cable_auxiliar",
+    money(Math.round(Math.max(conDescuentoBase, 10) + extraParadas))
+  );
 
-  let cableBase = Math.max(tarifaConDescuentoBase, 10);
-
-setValue(
-  "cable_auxiliar",
-  money(Math.round(cableBase + extraParadas))
-);
-
-// 🔥 actualizar texto automáticamente
-generarServicio();
+  // actualizar texto automáticamente
+  generarServicio();
 }
 
 /* ================= TAXIMETRO ================= */
@@ -274,9 +415,23 @@ function calcularTaximetro() {
 
 /* ================= LISTENERS ================= */
 
-["millas", "paradas"].forEach(id =>
-  out(id).addEventListener("input", calcularTarifas)
-);
+["millas", "paradas", "extra_carga", "dia_servicio", "hora_servicio", "sitio_nocturno"]
+  .forEach(id => {
+    const el = out(id);
+    if (!el) return;
+    el.addEventListener("input", calcularTarifas);
+    el.addEventListener("change", calcularTarifas);
+  });
+
+["origen", "destino", "unidad"].forEach(id => {
+  const el = out(id);
+  if (el) el.addEventListener("input", generarServicio);
+});
+
+out("usar_ahora")?.addEventListener("click", () => {
+  cargarAhora();
+  calcularTarifas();
+});
 
 [
   "millas_taximetro",
@@ -288,7 +443,50 @@ function calcularTaximetro() {
   out(id).addEventListener("input", calcularTaximetro)
 );
 
+/* ================= RELOJ DE ATLANTA ================= */
+
+// Usa el elemento #hora_atlanta si existe; si no, crea un reloj fijo arriba a la derecha
+function iniciarRelojAtlanta() {
+  let reloj = out("hora_atlanta");
+
+  if (!reloj) {
+    reloj = document.createElement("div");
+    reloj.id = "hora_atlanta";
+    reloj.style.cssText =
+      "position:fixed;top:12px;right:12px;z-index:1000;" +
+      "padding:6px 12px;border-radius:8px;" +
+      "background:rgba(0,0,0,.75);color:#fff;" +
+      "font:600 14px/1.2 system-ui,sans-serif;" +
+      "font-variant-numeric:tabular-nums;";
+    document.body.appendChild(reloj);
+  }
+
+  const formato = new Intl.DateTimeFormat("es-AR", {
+    timeZone: ZONA_HORARIA,
+    weekday: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true
+  });
+
+  const actualizar = () => {
+    const texto = formato.format(new Date());
+    reloj.textContent = "Atlanta: " + texto.charAt(0).toUpperCase() + texto.slice(1);
+  };
+
+  actualizar();
+  setInterval(actualizar, 1000);
+}
+
 /* ================= INIT ================= */
 
+if (document.body) {
+  iniciarRelojAtlanta();
+} else {
+  document.addEventListener("DOMContentLoaded", iniciarRelojAtlanta);
+}
+
+cargarAhora();
 calcularTarifas();
 calcularTaximetro();
