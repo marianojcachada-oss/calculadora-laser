@@ -1,28 +1,28 @@
 /* ================= CONFIGURACIÓN (TARIFARIO TAXI LASER) ================= */
 
 // Hora de referencia: Atlanta
-const ZONA_HORARIA = "America/New_York";
+var ZONA_HORARIA = "America/New_York";
 
 // Descuento único del tarifario (solo en los horarios que lo permiten)
-const ESCALAS_TARIFA = [
+var ESCALAS_TARIFA = [
   { desde: 0, factor: 0.90, txt: "10%" }
 ];
 
 // Van: mínima $8; menos de $29.75 sin descuento; igual o mayor a $30, 10% de descuento
-const VAN_MINIMA = 8;
-const ESCALAS_VAN = [
+var VAN_MINIMA = 8;
+var ESCALAS_VAN = [
   { desde: 30, factor: 0.90 },
   { desde: 0,  factor: 1 }
 ];
 
 // Sitio nocturno (bares y discotecas)
-const MINIMA_SITIO_NOCTURNO = 15;
+var MINIMA_SITIO_NOCTURNO = 15;
 
 // Extra por carga grande o mudanza (SUV, Van o Truck)
-const EXTRA_CARGA_MIN = 10;
-const EXTRA_CARGA_MAX = 30;
+var EXTRA_CARGA_MIN = 10;
+var EXTRA_CARGA_MAX = 30;
 
-const DIAS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+var DIAS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
 /* ================= HELPERS ================= */
 function out(id) {
@@ -181,7 +181,7 @@ function reglasHorario(dia, hora, min) {
 }
 
 // Última regla calculada, para armar el texto del servicio
-let ultimaRegla = null;
+var ultimaRegla = null;
 
 function textoRegla(momento, regla, sitioNocturno) {
   const hora =
@@ -227,7 +227,7 @@ function generarServicio() {
   const destino = out("destino")?.value || "";
   const unidad = out("unidad")?.value || "";
 
-  const millas = +out("millas").value || 0;
+  const millas = +out("millas")?.value || 0;
 
   // tomar valor de trabajo ya calculado
   const trabajoTexto = out("trabajo")?.textContent || "$ 0";
@@ -254,8 +254,8 @@ ${unidad} ${fecha} DE CREACIÓN`;
 /* ================= TARIFAS ================= */
 function calcularTarifas() {
 
-  const m = +out("millas").value || 0;
-  const p = +out("paradas").value || 0;
+  const m = +out("millas")?.value || 0;
+  const p = +out("paradas")?.value || 0;
 
   const extraParadas = p === 1 ? 2 : p > 1 ? 2 + (p - 1) : 0;
 
@@ -368,11 +368,11 @@ function calcularTarifas() {
 /* ================= TAXIMETRO ================= */
 function calcularTaximetro() {
 
-  const m = +out("millas_taximetro").value || 0;
-  const hi = +out("hora_inicio").value || 0;
-  const mi = +out("min_inicio").value || 0;
-  const hf = +out("hora_fin").value || 0;
-  const mf = +out("min_fin").value || 0;
+  const m = +out("millas_taximetro")?.value || 0;
+  const hi = +out("hora_inicio")?.value || 0;
+  const mi = +out("min_inicio")?.value || 0;
+  const hf = +out("hora_fin")?.value || 0;
+  const mf = +out("min_fin")?.value || 0;
 
   let base = 2;
 
@@ -423,7 +423,7 @@ out("usar_ahora")?.addEventListener("click", () => {
   "hora_fin",
   "min_fin"
 ].forEach(id =>
-  out(id).addEventListener("input", calcularTaximetro)
+  out(id)?.addEventListener("input", calcularTaximetro)
 );
 
 /* ================= RELOJ DE ATLANTA ================= */
