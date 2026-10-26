@@ -239,25 +239,11 @@ function generarServicio() {
   const hoy = new Date();
   const fecha = `${hoy.getDate()}/${hoy.getMonth() + 1}/${String(hoy.getFullYear()).slice(2)}`;
 
-  // días y horario en que vale la tarifa de trabajo
-  let vigencia = "";
-  if (ultimaRegla) {
-    const { regla, sitioNocturno, aplicaDescuento } = ultimaRegla;
-    const dias = sitioNocturno ? regla.diasNocturno : regla.dias;
-    const franja = sitioNocturno ? regla.franjaNocturna : regla.franja;
-    const condicion = sitioNocturno
-      ? `SITIO NOCTURNO, MÍNIMA $${MINIMA_SITIO_NOCTURNO}, SIN DESCUENTO`
-      : aplicaDescuento
-        ? "CON 10% DE DESCUENTO"
-        : "SIN DESCUENTO";
-
-  
-
   const resultado =
 `>>>TARIFA DE TRABAJO<<<
 ORIGEN : ${origen}
 DESTINO : ${destino}
-#71 DE $${trabajoValor} CON ${millas}M 
+#71 DE $${trabajoValor} CON ${millas}M
 
 ${unidad} ${fecha} DE CREACIÓN`;
 
