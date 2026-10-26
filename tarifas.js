@@ -251,16 +251,13 @@ function generarServicio() {
         ? "CON 10% DE DESCUENTO"
         : "SIN DESCUENTO";
 
-    vigencia =
-`\nLA TARIFA DE TRABAJO SOLO FUNCIONA LOS DÍAS ${dias} DE ${franja} (${condicion}).
-FUERA DE ESE DÍA Y HORARIO SE RECALCULA SEGÚN EL TARIFARIO.`;
-  }
+  
 
   const resultado =
 `>>>TARIFA DE TRABAJO<<<
 ORIGEN : ${origen}
 DESTINO : ${destino}
-#71 DE $${trabajoValor} CON ${millas}M ${vigencia}
+#71 DE $${trabajoValor} CON ${millas}M 
 
 ${unidad} ${fecha} DE CREACIÓN`;
 
